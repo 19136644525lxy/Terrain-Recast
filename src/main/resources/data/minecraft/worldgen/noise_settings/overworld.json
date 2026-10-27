@@ -106,7 +106,7 @@
   "material_rule": "minecraft:overworld",
   "noise": {
     "height": 2544,
-    "min_y": -512
+      "min_y": -512
   },
   "noise_router": {
     "chunk_surface_level": "minecraft:overworld/chunk_surface_level",

@@ -304,16 +304,27 @@ public final class RealCellLookup implements CellLookup {
 
     // ===== L1 大地貌掩码（地形塑形与群系分带共用同一套，避免两处漂移）=====
 
+    /** 边界类型噪声：>0 张裂、<0 汇聚。热路径上只算一次，供两个掩码共用。 */
+    private double boundaryTypeAt(int blockX, int blockZ) {
+        return terrainNoise.fbm(blockX, blockZ, BOUNDARY_TYPE_SCALE, 2, 2.0, 0.5);
+    }
+
     /** 张裂边界掩码 0~1（裂谷）。 */
     private double riftMaskAt(int blockX, int blockZ, double edge) {
-        double type = terrainNoise.fbm(blockX, blockZ, BOUNDARY_TYPE_SCALE, 2, 2.0, 0.5);
+        return riftMaskAt(boundaryTypeAt(blockX, blockZ), edge);
+    }
+
+    private static double riftMaskAt(double type, double edge) {
         double divergent = smoothstep(clamp((type - 0.02) * 4.0, 0.0, 1.0));
         return clamp(edge * divergent, 0.0, 1.0);
     }
 
     /** 汇聚边界掩码 0~1（火山弧）。 */
     private double arcMaskAt(int blockX, int blockZ, double edge) {
-        double type = terrainNoise.fbm(blockX, blockZ, BOUNDARY_TYPE_SCALE, 2, 2.0, 0.5);
+        return arcMaskAt(boundaryTypeAt(blockX, blockZ), edge);
+    }
+
+    private static double arcMaskAt(double type, double edge) {
         double convergent = smoothstep(clamp((-type - 0.02) * 4.0, 0.0, 1.0));
         return clamp(edge * convergent, 0.0, 1.0);
     }
@@ -387,8 +398,10 @@ public final class RealCellLookup implements CellLookup {
         h += infill;
 
         // ===== L1 大地貌 =====
-        double riftMask = riftMaskAt(blockX, blockZ, edge);
-        double arcMask = arcMaskAt(blockX, blockZ, edge);
+        // 边界类型噪声只算一次，裂谷/火山弧两个掩码共用（热路径优化）
+        double boundaryType = boundaryTypeAt(blockX, blockZ);
+        double riftMask = riftMaskAt(boundaryType, edge);
+        double arcMask = arcMaskAt(boundaryType, edge);
         double plateauMask = plateauMaskAt(blockX, blockZ, edge, landness);
 
         // 高原：向台面高度收敛并压平（保留少量起伏，避免镜子一样的平面）

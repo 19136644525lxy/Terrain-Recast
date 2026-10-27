@@ -27,13 +27,20 @@ final class PresetCommand {
     static LiteralArgumentBuilder<CommandSourceStack> build() {
         return Commands.literal("preset")
                 .then(Commands.literal("list").executes(PresetCommand::executeList))
-                .then(Commands.literal("apply")
+                // apply/import 会写配置（世界级副作用），要求 OP 权限等级 2
+                .then(Commands.literal("apply").requires(PresetCommand::isOp)
                         .then(Commands.argument("id", StringArgumentType.word())
                                 .executes(PresetCommand::executeApply)))
                 .then(Commands.literal("export").executes(PresetCommand::executeExport))
-                .then(Commands.literal("import")
+                .then(Commands.literal("import").requires(PresetCommand::isOp)
                         .then(Commands.argument("code", StringArgumentType.string())
                                 .executes(PresetCommand::executeImport)));
+    }
+
+    /** 写操作的权限门槛：等级 2（OP / 命令方块）。 */
+    private static boolean isOp(CommandSourceStack source) {
+        return source.permissions().hasPermission(
+                net.minecraft.server.permissions.Permissions.COMMANDS_GAMEMASTER);
     }
 
     private static int executeList(CommandContext<CommandSourceStack> ctx) {
