@@ -30,9 +30,9 @@
           }
         },
         {
-          "biome": "terrain_recast:arc",
+          "biome": "terrain_recast:arc_cold",
           "parameters": {
-            "temperature": [-2, 2],
+            "temperature": [-2, -0.05],
             "humidity": [-2, 2],
             "continentalness": [-0.11, 2],
             "erosion": [-2, 2],
@@ -42,9 +42,33 @@
           }
         },
         {
-          "biome": "terrain_recast:plateau",
+          "biome": "terrain_recast:arc",
           "parameters": {
-            "temperature": [-2, 2],
+            "temperature": [-0.05, 0.45],
+            "humidity": [-2, 2],
+            "continentalness": [-0.11, 2],
+            "erosion": [-2, 2],
+            "depth": [-2, 2],
+            "weirdness": [0.55, 2],
+            "offset": 0
+          }
+        },
+        {
+          "biome": "terrain_recast:arc_hot",
+          "parameters": {
+            "temperature": [0.45, 2],
+            "humidity": [-2, 2],
+            "continentalness": [-0.11, 2],
+            "erosion": [-2, 2],
+            "depth": [-2, 2],
+            "weirdness": [0.55, 2],
+            "offset": 0
+          }
+        },
+        {
+          "biome": "terrain_recast:plateau_cold",
+          "parameters": {
+            "temperature": [-2, -0.05],
             "humidity": [-2, 2],
             "continentalness": [-0.11, 2],
             "erosion": [-2, 2],
@@ -54,9 +78,33 @@
           }
         },
         {
-          "biome": "terrain_recast:plains",
+          "biome": "terrain_recast:plateau",
           "parameters": {
-            "temperature": [-2, 2],
+            "temperature": [-0.05, 0.45],
+            "humidity": [-2, 2],
+            "continentalness": [-0.11, 2],
+            "erosion": [-2, 2],
+            "depth": [-2, 2],
+            "weirdness": [0.15, 0.55],
+            "offset": 0
+          }
+        },
+        {
+          "biome": "terrain_recast:plateau_hot",
+          "parameters": {
+            "temperature": [0.45, 2],
+            "humidity": [-2, 2],
+            "continentalness": [-0.11, 2],
+            "erosion": [-2, 2],
+            "depth": [-2, 2],
+            "weirdness": [0.15, 0.55],
+            "offset": 0
+          }
+        },
+        {
+          "biome": "terrain_recast:plains_cold",
+          "parameters": {
+            "temperature": [-2, -0.05],
             "humidity": [-2, 2],
             "continentalness": [-0.11, 2],
             "erosion": [-2, 2],
@@ -66,9 +114,57 @@
           }
         },
         {
+          "biome": "terrain_recast:plains",
+          "parameters": {
+            "temperature": [-0.05, 0.45],
+            "humidity": [-2, 2],
+            "continentalness": [-0.11, 2],
+            "erosion": [-2, 2],
+            "depth": [-2, 2],
+            "weirdness": [-0.3, 0.15],
+            "offset": 0
+          }
+        },
+        {
+          "biome": "terrain_recast:plains_hot",
+          "parameters": {
+            "temperature": [0.45, 2],
+            "humidity": [-2, 2],
+            "continentalness": [-0.11, 2],
+            "erosion": [-2, 2],
+            "depth": [-2, 2],
+            "weirdness": [-0.3, 0.15],
+            "offset": 0
+          }
+        },
+        {
+          "biome": "terrain_recast:rift_cold",
+          "parameters": {
+            "temperature": [-2, -0.05],
+            "humidity": [-2, 2],
+            "continentalness": [-0.11, 2],
+            "erosion": [-2, 2],
+            "depth": [-2, 2],
+            "weirdness": [-2, -0.3],
+            "offset": 0
+          }
+        },
+        {
           "biome": "terrain_recast:rift",
           "parameters": {
-            "temperature": [-2, 2],
+            "temperature": [-0.05, 0.45],
+            "humidity": [-2, 2],
+            "continentalness": [-0.11, 2],
+            "erosion": [-2, 2],
+            "depth": [-2, 2],
+            "weirdness": [-2, -0.3],
+            "offset": 0
+          }
+        },
+        {
+          "biome": "terrain_recast:rift_hot",
+          "parameters": {
+            "temperature": [0.45, 2],
             "humidity": [-2, 2],
             "continentalness": [-0.11, 2],
             "erosion": [-2, 2],

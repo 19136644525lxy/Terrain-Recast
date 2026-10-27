@@ -96,6 +96,7 @@ public final class PreviewDump {
         final int centerZ = 0;
         int[] px = new int[w * h];
         int[] counts = new int[WhittakerBiome.COUNT];
+        double[] temps = new double[w * h];
         long start = System.currentTimeMillis();
         RealCellLookup lookup = new RealCellLookup(seed);
         try {
@@ -106,6 +107,7 @@ public final class PreviewDump {
                     int biome = (int) Math.round(lookup.sampleField(Cell.Field.BIOME, bx, bz));
                     counts[Math.max(0, Math.min(counts.length - 1, biome))]++;
                     px[y * w + x] = BIOME_COLORS[Math.max(0, Math.min(BIOME_COLORS.length - 1, biome))];
+                    temps[y * w + x] = lookup.sampleField(Cell.Field.TEMPERATURE, bx, bz);
                 }
             }
         } finally {
@@ -124,6 +126,11 @@ public final class PreviewDump {
                     .append(String.format("%.0f%%", 100.0 * counts[i] / (w * h)));
         }
         System.out.printf("biomes seed=%d  %d ms  %s%n", seed, elapsed, sb);
+        java.util.Arrays.sort(temps);
+        int tn = temps.length;
+        System.out.printf("   temp: p10=%.2f p25=%.2f p50=%.2f p75=%.2f p90=%.2f p99=%.2f%n",
+                temps[(int) (tn * 0.10)], temps[(int) (tn * 0.25)], temps[(int) (tn * 0.50)],
+                temps[(int) (tn * 0.75)], temps[(int) (tn * 0.90)], temps[(int) (tn * 0.99)]);
     }
 
     /** 群系配色（与 WhittakerBiome 的 id 对齐）。 */
