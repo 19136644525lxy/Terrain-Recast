@@ -3,10 +3,13 @@
   "temperature": 0,
   "downfall": 0.2,
   "effects": {
-    "sky_color": 7907327,
-    "fog_color": 12638463,
-    "water_color": 4159204,
-    "water_fog_color": 329011,
+    "sky_color": "#7A9BC4",
+    "fog_color": "#AFC6DE",
+    "water_color": "#3D7BB5",
+    "water_fog_color": "#3D7BB5",
+    "grass_color": "#8FA786",
+    "foliage_color": "#8FA786",
+    "dry_foliage_color": "#A8B39A",
     "mood_sound": {
       "sound": "minecraft:ambient.cave",
       "tick_delay": 6000,

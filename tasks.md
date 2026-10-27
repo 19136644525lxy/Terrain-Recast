@@ -610,3 +610,30 @@ L6 群系、矿床、植被等其它功能不受影响。
   - 26.3 新增的 `attributes`（`EnvironmentAttributeMap`）——草色/水色/雾色可能是这里的属性
   - 各自的 placed_feature 组合
 - 树种目前由模组 `TerrainVegetationFeature` 按 Whittaker 统一投放，不区分地貌
+
+---
+
+## 群系配色（2026-10-27）
+
+26.3 的群系颜色不需要 `attributes`，仍在 `effects` 里，格式是 **`"#RRGGBB"`**
+（`ExtraCodecs.STRING_RGB_COLOR`，必须以 # 开头）。可用字段：
+`sky_color` / `fog_color` / `water_color` / `water_fog_color` /
+`grass_color` / `foliage_color` / `dry_foliage_color`。
+
+按 6 个气候格给 24 个群系配了色：
+
+| 气候格 | 草色 | 水色 | 天空 |
+|---|---|---|---|
+| tundra | `#8FA786` | `#3D7BB5` | `#7A9BC4` |
+| taiga | `#68A464` | `#3D6EA8` | `#6E8FB8` |
+| grassland | `#91BD59` | `#3F76E4` | `#78A7DC` |
+| forest | `#79C05A` | `#3F76E4` | `#79A6DC` |
+| desert | `#BFB755` | `#32A598` | `#8FB8E0` |
+| savanna | `#BFB755` | `#3F76E4` | `#8FB0DC` |
+
+`runServer` 全量加载通过（24 个 JSON 都带色）。
+
+### 下一步
+
+- 树的分布还是全局按 Whittaker 投，没区分地貌（arc 上也会有树）
+- 雾/天空的分地貌差异（裂谷更暗、火山弧更浑）还没做
