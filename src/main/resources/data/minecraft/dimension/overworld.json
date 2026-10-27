@@ -8,169 +8,183 @@
         {
           "biome": "minecraft:ocean",
           "parameters": {
-            "temperature": [-2, 2],
-            "humidity": [-2, 2],
-            "continentalness": [-2, -0.19],
-            "erosion": [-2, 2],
-            "depth": [-2, 2],
-            "weirdness": [-2, 2],
-            "offset": 0
+            "temperature": [-2, 2], "humidity": [-2, 2], "continentalness": [-2, -0.19],
+            "erosion": [-2, 2], "depth": [-2, 2], "weirdness": [-2, 2], "offset": 0
           }
         },
         {
           "biome": "minecraft:beach",
           "parameters": {
-            "temperature": [-2, 2],
-            "humidity": [-2, 2],
-            "continentalness": [-0.19, -0.11],
-            "erosion": [-2, 2],
-            "depth": [-2, 2],
-            "weirdness": [-2, 2],
-            "offset": 0
+            "temperature": [-2, 2], "humidity": [-2, 2], "continentalness": [-0.19, -0.11],
+            "erosion": [-2, 2], "depth": [-2, 2], "weirdness": [-2, 2], "offset": 0
           }
         },
         {
-          "biome": "terrain_recast:arc_cold",
+          "biome": "terrain_recast:arc_tundra",
           "parameters": {
-            "temperature": [-2, -0.05],
-            "humidity": [-2, 2],
-            "continentalness": [-0.11, 2],
-            "erosion": [-2, 2],
-            "depth": [-2, 2],
-            "weirdness": [0.55, 2],
-            "offset": 0
+            "temperature": [-2, -0.05], "humidity": [-2, 0.10], "continentalness": [-0.11, 2],
+            "erosion": [-2, 2], "depth": [-2, 2], "weirdness": [0.55, 2], "offset": 0
           }
         },
         {
-          "biome": "terrain_recast:arc",
+          "biome": "terrain_recast:arc_taiga",
           "parameters": {
-            "temperature": [-0.05, 0.45],
-            "humidity": [-2, 2],
-            "continentalness": [-0.11, 2],
-            "erosion": [-2, 2],
-            "depth": [-2, 2],
-            "weirdness": [0.55, 2],
-            "offset": 0
+            "temperature": [-2, -0.05], "humidity": [0.10, 2], "continentalness": [-0.11, 2],
+            "erosion": [-2, 2], "depth": [-2, 2], "weirdness": [0.55, 2], "offset": 0
           }
         },
         {
-          "biome": "terrain_recast:arc_hot",
+          "biome": "terrain_recast:arc_grassland",
           "parameters": {
-            "temperature": [0.45, 2],
-            "humidity": [-2, 2],
-            "continentalness": [-0.11, 2],
-            "erosion": [-2, 2],
-            "depth": [-2, 2],
-            "weirdness": [0.55, 2],
-            "offset": 0
+            "temperature": [-0.05, 0.45], "humidity": [-2, 0.10], "continentalness": [-0.11, 2],
+            "erosion": [-2, 2], "depth": [-2, 2], "weirdness": [0.55, 2], "offset": 0
           }
         },
         {
-          "biome": "terrain_recast:plateau_cold",
+          "biome": "terrain_recast:arc_forest",
           "parameters": {
-            "temperature": [-2, -0.05],
-            "humidity": [-2, 2],
-            "continentalness": [-0.11, 2],
-            "erosion": [-2, 2],
-            "depth": [-2, 2],
-            "weirdness": [0.15, 0.55],
-            "offset": 0
+            "temperature": [-0.05, 0.45], "humidity": [0.10, 2], "continentalness": [-0.11, 2],
+            "erosion": [-2, 2], "depth": [-2, 2], "weirdness": [0.55, 2], "offset": 0
           }
         },
         {
-          "biome": "terrain_recast:plateau",
+          "biome": "terrain_recast:arc_desert",
           "parameters": {
-            "temperature": [-0.05, 0.45],
-            "humidity": [-2, 2],
-            "continentalness": [-0.11, 2],
-            "erosion": [-2, 2],
-            "depth": [-2, 2],
-            "weirdness": [0.15, 0.55],
-            "offset": 0
+            "temperature": [0.45, 2], "humidity": [-2, 0.10], "continentalness": [-0.11, 2],
+            "erosion": [-2, 2], "depth": [-2, 2], "weirdness": [0.55, 2], "offset": 0
           }
         },
         {
-          "biome": "terrain_recast:plateau_hot",
+          "biome": "terrain_recast:arc_savanna",
           "parameters": {
-            "temperature": [0.45, 2],
-            "humidity": [-2, 2],
-            "continentalness": [-0.11, 2],
-            "erosion": [-2, 2],
-            "depth": [-2, 2],
-            "weirdness": [0.15, 0.55],
-            "offset": 0
+            "temperature": [0.45, 2], "humidity": [0.10, 2], "continentalness": [-0.11, 2],
+            "erosion": [-2, 2], "depth": [-2, 2], "weirdness": [0.55, 2], "offset": 0
           }
         },
         {
-          "biome": "terrain_recast:plains_cold",
+          "biome": "terrain_recast:plateau_tundra",
           "parameters": {
-            "temperature": [-2, -0.05],
-            "humidity": [-2, 2],
-            "continentalness": [-0.11, 2],
-            "erosion": [-2, 2],
-            "depth": [-2, 2],
-            "weirdness": [-0.3, 0.15],
-            "offset": 0
+            "temperature": [-2, -0.05], "humidity": [-2, 0.10], "continentalness": [-0.11, 2],
+            "erosion": [-2, 2], "depth": [-2, 2], "weirdness": [0.15, 0.55], "offset": 0
           }
         },
         {
-          "biome": "terrain_recast:plains",
+          "biome": "terrain_recast:plateau_taiga",
           "parameters": {
-            "temperature": [-0.05, 0.45],
-            "humidity": [-2, 2],
-            "continentalness": [-0.11, 2],
-            "erosion": [-2, 2],
-            "depth": [-2, 2],
-            "weirdness": [-0.3, 0.15],
-            "offset": 0
+            "temperature": [-2, -0.05], "humidity": [0.10, 2], "continentalness": [-0.11, 2],
+            "erosion": [-2, 2], "depth": [-2, 2], "weirdness": [0.15, 0.55], "offset": 0
           }
         },
         {
-          "biome": "terrain_recast:plains_hot",
+          "biome": "terrain_recast:plateau_grassland",
           "parameters": {
-            "temperature": [0.45, 2],
-            "humidity": [-2, 2],
-            "continentalness": [-0.11, 2],
-            "erosion": [-2, 2],
-            "depth": [-2, 2],
-            "weirdness": [-0.3, 0.15],
-            "offset": 0
+            "temperature": [-0.05, 0.45], "humidity": [-2, 0.10], "continentalness": [-0.11, 2],
+            "erosion": [-2, 2], "depth": [-2, 2], "weirdness": [0.15, 0.55], "offset": 0
           }
         },
         {
-          "biome": "terrain_recast:rift_cold",
+          "biome": "terrain_recast:plateau_forest",
           "parameters": {
-            "temperature": [-2, -0.05],
-            "humidity": [-2, 2],
-            "continentalness": [-0.11, 2],
-            "erosion": [-2, 2],
-            "depth": [-2, 2],
-            "weirdness": [-2, -0.3],
-            "offset": 0
+            "temperature": [-0.05, 0.45], "humidity": [0.10, 2], "continentalness": [-0.11, 2],
+            "erosion": [-2, 2], "depth": [-2, 2], "weirdness": [0.15, 0.55], "offset": 0
           }
         },
         {
-          "biome": "terrain_recast:rift",
+          "biome": "terrain_recast:plateau_desert",
           "parameters": {
-            "temperature": [-0.05, 0.45],
-            "humidity": [-2, 2],
-            "continentalness": [-0.11, 2],
-            "erosion": [-2, 2],
-            "depth": [-2, 2],
-            "weirdness": [-2, -0.3],
-            "offset": 0
+            "temperature": [0.45, 2], "humidity": [-2, 0.10], "continentalness": [-0.11, 2],
+            "erosion": [-2, 2], "depth": [-2, 2], "weirdness": [0.15, 0.55], "offset": 0
           }
         },
         {
-          "biome": "terrain_recast:rift_hot",
+          "biome": "terrain_recast:plateau_savanna",
           "parameters": {
-            "temperature": [0.45, 2],
-            "humidity": [-2, 2],
-            "continentalness": [-0.11, 2],
-            "erosion": [-2, 2],
-            "depth": [-2, 2],
-            "weirdness": [-2, -0.3],
-            "offset": 0
+            "temperature": [0.45, 2], "humidity": [0.10, 2], "continentalness": [-0.11, 2],
+            "erosion": [-2, 2], "depth": [-2, 2], "weirdness": [0.15, 0.55], "offset": 0
+          }
+        },
+        {
+          "biome": "terrain_recast:plains_tundra",
+          "parameters": {
+            "temperature": [-2, -0.05], "humidity": [-2, 0.10], "continentalness": [-0.11, 2],
+            "erosion": [-2, 2], "depth": [-2, 2], "weirdness": [-0.3, 0.15], "offset": 0
+          }
+        },
+        {
+          "biome": "terrain_recast:plains_taiga",
+          "parameters": {
+            "temperature": [-2, -0.05], "humidity": [0.10, 2], "continentalness": [-0.11, 2],
+            "erosion": [-2, 2], "depth": [-2, 2], "weirdness": [-0.3, 0.15], "offset": 0
+          }
+        },
+        {
+          "biome": "terrain_recast:plains_grassland",
+          "parameters": {
+            "temperature": [-0.05, 0.45], "humidity": [-2, 0.10], "continentalness": [-0.11, 2],
+            "erosion": [-2, 2], "depth": [-2, 2], "weirdness": [-0.3, 0.15], "offset": 0
+          }
+        },
+        {
+          "biome": "terrain_recast:plains_forest",
+          "parameters": {
+            "temperature": [-0.05, 0.45], "humidity": [0.10, 2], "continentalness": [-0.11, 2],
+            "erosion": [-2, 2], "depth": [-2, 2], "weirdness": [-0.3, 0.15], "offset": 0
+          }
+        },
+        {
+          "biome": "terrain_recast:plains_desert",
+          "parameters": {
+            "temperature": [0.45, 2], "humidity": [-2, 0.10], "continentalness": [-0.11, 2],
+            "erosion": [-2, 2], "depth": [-2, 2], "weirdness": [-0.3, 0.15], "offset": 0
+          }
+        },
+        {
+          "biome": "terrain_recast:plains_savanna",
+          "parameters": {
+            "temperature": [0.45, 2], "humidity": [0.10, 2], "continentalness": [-0.11, 2],
+            "erosion": [-2, 2], "depth": [-2, 2], "weirdness": [-0.3, 0.15], "offset": 0
+          }
+        },
+        {
+          "biome": "terrain_recast:rift_tundra",
+          "parameters": {
+            "temperature": [-2, -0.05], "humidity": [-2, 0.10], "continentalness": [-0.11, 2],
+            "erosion": [-2, 2], "depth": [-2, 2], "weirdness": [-2, -0.3], "offset": 0
+          }
+        },
+        {
+          "biome": "terrain_recast:rift_taiga",
+          "parameters": {
+            "temperature": [-2, -0.05], "humidity": [0.10, 2], "continentalness": [-0.11, 2],
+            "erosion": [-2, 2], "depth": [-2, 2], "weirdness": [-2, -0.3], "offset": 0
+          }
+        },
+        {
+          "biome": "terrain_recast:rift_grassland",
+          "parameters": {
+            "temperature": [-0.05, 0.45], "humidity": [-2, 0.10], "continentalness": [-0.11, 2],
+            "erosion": [-2, 2], "depth": [-2, 2], "weirdness": [-2, -0.3], "offset": 0
+          }
+        },
+        {
+          "biome": "terrain_recast:rift_forest",
+          "parameters": {
+            "temperature": [-0.05, 0.45], "humidity": [0.10, 2], "continentalness": [-0.11, 2],
+            "erosion": [-2, 2], "depth": [-2, 2], "weirdness": [-2, -0.3], "offset": 0
+          }
+        },
+        {
+          "biome": "terrain_recast:rift_desert",
+          "parameters": {
+            "temperature": [0.45, 2], "humidity": [-2, 0.10], "continentalness": [-0.11, 2],
+            "erosion": [-2, 2], "depth": [-2, 2], "weirdness": [-2, -0.3], "offset": 0
+          }
+        },
+        {
+          "biome": "terrain_recast:rift_savanna",
+          "parameters": {
+            "temperature": [0.45, 2], "humidity": [0.10, 2], "continentalness": [-0.11, 2],
+            "erosion": [-2, 2], "depth": [-2, 2], "weirdness": [-2, -0.3], "offset": 0
           }
         }
       ]

@@ -97,6 +97,7 @@ public final class PreviewDump {
         int[] px = new int[w * h];
         int[] counts = new int[WhittakerBiome.COUNT];
         double[] temps = new double[w * h];
+        double[] humid = new double[w * h];
         long start = System.currentTimeMillis();
         RealCellLookup lookup = new RealCellLookup(seed);
         try {
@@ -108,6 +109,7 @@ public final class PreviewDump {
                     counts[Math.max(0, Math.min(counts.length - 1, biome))]++;
                     px[y * w + x] = BIOME_COLORS[Math.max(0, Math.min(BIOME_COLORS.length - 1, biome))];
                     temps[y * w + x] = lookup.sampleField(Cell.Field.TEMPERATURE, bx, bz);
+                    humid[y * w + x] = lookup.sampleField(Cell.Field.MOISTURE, bx, bz);
                 }
             }
         } finally {
@@ -131,6 +133,10 @@ public final class PreviewDump {
         System.out.printf("   temp: p10=%.2f p25=%.2f p50=%.2f p75=%.2f p90=%.2f p99=%.2f%n",
                 temps[(int) (tn * 0.10)], temps[(int) (tn * 0.25)], temps[(int) (tn * 0.50)],
                 temps[(int) (tn * 0.75)], temps[(int) (tn * 0.90)], temps[(int) (tn * 0.99)]);
+        java.util.Arrays.sort(humid);
+        System.out.printf("   humid: p10=%.2f p25=%.2f p50=%.2f p75=%.2f p90=%.2f p99=%.2f%n",
+                humid[(int) (tn * 0.10)], humid[(int) (tn * 0.25)], humid[(int) (tn * 0.50)],
+                humid[(int) (tn * 0.75)], humid[(int) (tn * 0.90)], humid[(int) (tn * 0.99)]);
     }
 
     /** 群系配色（与 WhittakerBiome 的 id 对齐）。 */

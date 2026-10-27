@@ -545,3 +545,39 @@ L6 群系、矿床、植被等其它功能不受影响。
 
 - 湿度还没参与分带（现在 humidity 全 [-2,2]）
 - 12 个群系的数值（地表、草色、树、水色）目前只做了少量区分，需要逐个调
+
+---
+
+## 群系矩阵加湿度轴：4 地貌 × 6 气候格 = 24 个群系（2026-10-27）
+
+### 结构
+
+气候格直接对齐 Whittaker 六类，名字可读：
+
+| 温度 \ 湿度 | 干 (humidity < 0.10) | 湿 (humidity ≥ 0.10) |
+|---|---|---|
+| 冷 [-2,-0.05] | `*_tundra` | `*_taiga` |
+| 温 [-0.05,0.45] | `*_grassland` | `*_forest` |
+| 热 [0.45,2] | `*_desert` | `*_savanna` |
+
+`*` = plains / plateau / rift / arc，共 **24 个自定义群系** + ocean/beach = **26 条表项**。
+
+### 踩到的坑
+
+- `trees_oak` / `flower_forest` **不是合法的 placed_feature id**，会让整个注册表加载失败
+  （`Unbound values in registry minecraft:worldgen/placed_feature`）。
+  树交给模组自己的 `TerrainVegetationFeature`（按 Whittaker 选树种），群系里只放 patch 类。
+- 湿度分界放在 0 时，实测约 80% 陆地落在"湿"侧（湿度中位数 ≈ +0.1）；
+  挪到 **0.10** 后干湿接近对半。
+
+### 验证
+
+- 49 个格点采样命中 11 种陆地群系：`plains_tundra`(10) / `rift_taiga`(5) /
+  `plains_taiga`(4) / `plains_grassland`(3) / `rift_forest`(3) / `arc_taiga`(2) /
+  `plateau_grassland`(2) / `plateau_tundra` / `plateau_taiga` / `plateau_savanna`
+- 温度/湿度分位数已加进 `dumpPreview`：温度 p50 0.17–0.45、湿度 p50 0.07–0.20
+
+### 下一步
+
+- 每个群系的地表/草色/树/水色还是默认值，需要逐个调（24 个）
+- `arc` 系列要玄武岩/黑沙地表

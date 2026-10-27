@@ -1,10 +1,10 @@
 {
   "has_precipitation": true,
-  "temperature": 1,
-  "downfall": 0.05,
+  "temperature": 0.1,
+  "downfall": 0.6,
   "effects": {
-    "sky_color": 8364543,
-    "fog_color": 11908228,
+    "sky_color": 8103167,
+    "fog_color": 12638463,
     "water_color": 4159204,
     "water_fog_color": 329011,
     "mood_sound": {
@@ -20,12 +20,7 @@
     "minecraft:canyon"
   ],
   "features": [
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
+    [], [], [], [], [], [],
     [
       "minecraft:ore_coal_upper",
       "minecraft:ore_iron_upper"
@@ -33,7 +28,7 @@
     [],
     [],
     [
-      "minecraft:patch_dead_bush","minecraft:patch_cactus_desert"
+      "minecraft:patch_grass_plain","minecraft:patch_tall_grass_2"
     ],
     []
   ]

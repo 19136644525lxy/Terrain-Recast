@@ -1,7 +1,7 @@
 {
-  "has_precipitation": true,
+  "has_precipitation": false,
   "temperature": 0.95,
-  "downfall": 0.1,
+  "downfall": 0,
   "effects": {
     "sky_color": 8364543,
     "fog_color": 12638463,
@@ -20,12 +20,7 @@
     "minecraft:canyon"
   ],
   "features": [
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
+    [], [], [], [], [], [],
     [
       "minecraft:ore_coal_upper",
       "minecraft:ore_iron_upper"
