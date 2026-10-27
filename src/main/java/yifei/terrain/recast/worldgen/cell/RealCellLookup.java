@@ -375,14 +375,22 @@ public final class RealCellLookup implements CellLookup {
         double erodeNoise = terrainNoise.fbm(blockX, blockZ, EROSION_ENVELOPE_SCALE, 2, 2.0, 0.5);
         double erode = smoothstep(clamp(erodeNoise * 0.5 + 0.5, 0.0, 1.0));
         double sharpness = 1.0 - erode * erosionRound;
-        // 山体区域掩码：低频（1600 格）决定"这一带是不是山区"。
-        // 参考 TerraForged（山脉类型 weight=2.0）与 Terralith（大尺度 offset 样条）：
-        // 高山应该成片出现，而不是每条脊线一样高。增益 0.8~1.7，均值约 1.25。
+        // 造山带权重：地质上"山脉沿板块边界成带"，板内只有零星山系。
+        // 旧公式 (0.45 + 0.55*edge) 让板内也有 45% 抬升 → 全世界都是山。
+        // 新公式：边界主导（0.60 基础 + 0.40 汇聚加成），板内只留 0.35 的弱山系，
+        // 并且板内山系会被 edge 反向削弱，保证"边界成带、内部平坦"。
+        double boundaryTypeForOrogen = boundaryTypeAt(blockX, blockZ);
+        double arcForOrogen = arcMaskAt(boundaryTypeForOrogen, edge);
+        // 板内山系：低频（1600 格）决定"这一带有没有山"
         double massif = smoothstep(clamp(
                 terrainNoise.fbm(blockX, blockZ, MASSIF_SCALE, 2, 2.0, 0.5) * 1.1 + 0.15, 0.0, 1.0));
-        double massifGain = 0.8 + 0.9 * massif;
-        double uplift = landness * (0.45 + 0.55 * edge) * massifGain
-                * ridge * mountainAmp * sharpness * verticalScale;
+        double orogen = edge * (0.60 + 0.40 * arcForOrogen);
+        double intraplate = (1.0 - edge) * massif * 0.35;
+        double orogenGain = clamp(orogen + intraplate, 0.0, 1.2);
+        // 脊线用平方加权：只有真正的脊顶才高，山体整体变矮、变少，但峰顶仍有高度
+        double ridgeSharp = ridge * ridge;
+        double uplift = landness * orogenGain
+                * ridgeSharp * mountainAmp * sharpness * verticalScale;
 
         // 3) 海沟：只在陆洋边界附近下切，山脊处减弱
         double trench = (1.0 - landness) * edge * (1.0 - 0.5 * ridge) * trenchDepth;
