@@ -101,7 +101,7 @@ public final class RealCellLookup implements CellLookup {
         // 从配置读取地形系数，无配置/未知 key 时回落默认字面量
         this.coastSpan = ConfigHandler.tuning("terrain.coast_span", 30.0);
         this.latitudeScale = ConfigHandler.tuning("climate.latitude_scale", 6000.0);
-        this.mountainAmp = ConfigHandler.tuning("terrain.mountain_amp", 1600.0);
+        this.mountainAmp = ConfigHandler.tuning("terrain.mountain_amp", 900.0);
         this.interiorAmp = ConfigHandler.tuning("terrain.interior_amp", 55.0);
         this.abyssAmp = ConfigHandler.tuning("terrain.abyss_amp", 16.0);
         this.trenchDepth = ConfigHandler.tuning("terrain.trench_depth", 60.0);
@@ -261,7 +261,7 @@ public final class RealCellLookup implements CellLookup {
         double lat = Math.min(1.0, Math.abs(blockZ) / latitudeScale);
         double jitter = terrainNoise.fbm(blockX, blockZ, CLIMATE_JITTER_SCALE, 2, 2.0, 0.5) * 0.30;
         // 用解析基面高度：temperature 是群系查询的热点，不能触发水文建区
-        double elev = Math.max(0.0, baseTerrainHeight(blockX, blockZ, edge) - 100.0) * 0.0032;
+        double elev = Math.max(0.0, baseTerrainHeight(blockX, blockZ, edge) - 100.0) * 0.0015;
         return clamp(0.55 - 1.05 * lat + jitter - elev, -1.0, 1.0);
     }
 

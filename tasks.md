@@ -379,3 +379,41 @@
 
 **备份**：删除的 5 个文件在 `temp/removed-water/`（该目录不入版本库）。
 L6 群系、矿床、植被等其它功能不受影响。
+
+---
+
+## P0 地形/温度基线（2026-10-27）· 为大地貌与群系铺路
+
+参考模组的做法先查清楚了（	emp/ 源码）：
+
+- **Tectonic**：只覆写 `density_function/overworld/noise_router/*` 与 `dimension_type`，
+  地形和群系选择**全部靠 router 密度函数**驱动，不引入三方依赖。
+- **Terralith**：覆写 `data/minecraft/dimension/overworld.json`，用内联
+  `multi_noise` 的 `biomes` 列表**完全接管群系表**（文件 1 MB，逐条 ParameterPoint→biome）。
+  **不再需要 TerraBlender**——这是之前判断的修正。
+
+### 改动
+
+| 参数 | 旧 | 新 | 理由 |
+|---|---|---|---|
+| `terrain.mountain_amp` | 1600 | **900** | 山地占比过高，p90 高度 915 全是山 |
+| 温度海拔递减 | 0.0032/格 | **0.0015/格** | 递减太狠导致全图寒带、无沙漠 |
+
+### 效果（4 个种子，离线 dump）
+
+| 指标 | 旧（seed 1） | 新（seed 1） |
+|---|---|---|
+| 高度 p50 / p90 / max | 475 / 915 / 1367 | **278 / 533 / 777** |
+| 坡度 p50 / max | 2.56 / 12.99 | **1.51 / 7.55** |
+| 苔原占比 | 43% | **1%** |
+| 森林 / 草原 / 稀树草原 | 11% / 1% / 0% | **34% / 21% / 6%** |
+
+群系带终于铺开了（此前 tundra 43% + alpine 14%，几乎没有温带）。
+
+### 下一步
+
+1. **L1 大地貌**：`Cell.Field` 加 `LANDFORM`（平原/高原/裂谷/火山弧/盆地），
+   Tectonic 风格在 router 里生成对应形态，顺带补 L0 的边界类型分类。
+2. **群系表接管**：生成 `dimension/overworld.json` 的内联 multi_noise 列表
+   （由 Whittaker + LANDFORM 映射成 ParameterPoint），**不引入 TerraBlender**。
+3. 每个群系的数据包内容（地表规则、树种、地物、水色）。
