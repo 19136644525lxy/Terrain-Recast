@@ -27,7 +27,6 @@ public class TerrainRecast implements ModInitializer {
         // 挂载地质矿床：同在地物类型注册之后，注入 UNDERGROUND_ORES 步骤。
         OreDepositWorldgen.register();
         // 统一下发地物注入登记表（植被 + 矿床 + 附属登记项）。
-        // 统一下发地物注入登记表（植被 + 矿床 + 附属登记项）。
         // 附属若在 TRC 之后才登记，可自行再调一次 apply()——已下发的条目不会重复注入。
         TerrainRecastApi.getFeatureInjection().apply();
     }

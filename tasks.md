@@ -581,3 +581,32 @@ L6 群系、矿床、植被等其它功能不受影响。
 
 - 每个群系的地表/草色/树/水色还是默认值，需要逐个调（24 个）
 - `arc` 系列要玄武岩/黑沙地表
+
+---
+
+## 群系专属地表：arc 玄武岩 / desert 沙（2026-10-27）
+
+26.3 的 `material_rule` 支持**按群系加条件**（`BiomeCondition`，字段 `biome_is`，
+接受单个 id / 列表 / 标签），所以在 `material_rule/overworld.json` 的 sequence **最前面**
+插两条规则即可，先匹配先赢：
+
+| 条件 | 结果方块 |
+|---|---|
+| `biome_is` 命中 6 个 `terrain_recast:arc_*` | `minecraft:basalt` |
+| `biome_is` 命中 3 个 `terrain_recast:*_desert` | `minecraft:sand` |
+
+### 验证
+
+实机读方块（扫描 ‖1600 格内找 arc 群系）：
+
+`SURFACECHECK (400,-1600) y=251 biome=terrain_recast:arc_tundra top=minecraft:basalt`
+
+→ 群系条件地表生效。沙漠规则结构相同，但世界又热又干的点太少，这次没抽到
+（此前 49 点采样里 desert 也是 0），规则本身与 arc 同一机制。
+
+### 下一步
+
+- 其余 20 个群系仍是原版默认地表（草/沙），要区分得靠：
+  - 26.3 新增的 `attributes`（`EnvironmentAttributeMap`）——草色/水色/雾色可能是这里的属性
+  - 各自的 placed_feature 组合
+- 树种目前由模组 `TerrainVegetationFeature` 按 Whittaker 统一投放，不区分地貌
