@@ -30,6 +30,18 @@
           }
         },
         {
+          "biome": "terrain_recast:arc",
+          "parameters": {
+            "temperature": [-2, 2],
+            "humidity": [-2, 2],
+            "continentalness": [-0.11, 2],
+            "erosion": [-2, 2],
+            "depth": [-2, 2],
+            "weirdness": [0.55, 2],
+            "offset": 0
+          }
+        },
+        {
           "biome": "terrain_recast:plateau",
           "parameters": {
             "temperature": [-2, 2],
@@ -37,7 +49,19 @@
             "continentalness": [-0.11, 2],
             "erosion": [-2, 2],
             "depth": [-2, 2],
-            "weirdness": [-0.3, 2],
+            "weirdness": [0.15, 0.55],
+            "offset": 0
+          }
+        },
+        {
+          "biome": "terrain_recast:plains",
+          "parameters": {
+            "temperature": [-2, 2],
+            "humidity": [-2, 2],
+            "continentalness": [-0.11, 2],
+            "erosion": [-2, 2],
+            "depth": [-2, 2],
+            "weirdness": [-0.3, 0.15],
             "offset": 0
           }
         },

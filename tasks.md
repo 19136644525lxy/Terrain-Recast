@@ -485,3 +485,33 @@ L6 群系、矿床、植被等其它功能不受影响。
 
 - 火山弧还没有对应群系（现在落到 plateau），要补 `terrain_recast:arc`
 - 群系表要扩成完整的"温湿 × 地貌"矩阵
+
+---
+
+## 群系扩充：arc / plains（2026-10-27）
+
+补齐地貌对应的群系，现在表里 **4 个自定义陆地群系** + 2 个原版海洋群系：
+
+| weirdness 区间 | 群系 | 对应地貌 |
+|---|---|---|
+| [0.55, 2] | `terrain_recast:arc` | 火山弧（无降水、暗色天空、枯木/仙人掌） |
+| [0.15, 0.55] | `terrain_recast:plateau` | 高原 |
+| [-0.3, 0.15] | `terrain_recast:plains` | 平原 |
+| [-2, -0.3] | `terrain_recast:rift` | 裂谷（暖干） |
+| continentalness < -0.19 | `minecraft:ocean` | 海洋 |
+| [-0.19, -0.11] | `minecraft:beach` | 沙滩 |
+
+`runServer` 加载正常（1.73 s），无注册表报错。
+
+### 验证方式的一个坑
+
+想统计"群系实际占比"时，用 `level.getChunk()` 同步生成大量区块会**触发服务器 watchdog**
+（单 tick 超过 60 s 强制关闭）。后来改为直接采样 `BiomeSource`，但 26.3 的
+`RandomState` 只暴露 `createClimateSampler(SamplerContext)`，拿不到现成 sampler，
+于是退回**离线验证**：地貌图的分带比例（plain/plateau/arc/rift 像素数）与群系表一一对应，
+再用此前的小样本探针确认过 `landform=-0.60 → rift`、`0.35 → plateau`。
+
+### 下一步
+
+- 群系矩阵：温湿 × 地貌（目标 12~16 个），现在温度/湿度还没参与分带
+- `arc` 还缺地表规则（玄武岩/黑沙），现在只是普通地表
