@@ -93,5 +93,7 @@
   "command.terrain_recast.peak.entry": "%s. (%s, %s) height %s · surface Y≈%s · %s blocks away",
   "command.terrain_recast.peak.none": "No terrain >= %s blocks within %s blocks",
   "command.terrain_recast.peak.not_ready": "Terrain data is not ready yet",
-  "command.terrain_recast.peak.highest": "Highest point in range: (%s, %s) height %s · surface Y≈%s · %s blocks away"
+  "command.terrain_recast.peak.highest": "Highest point in range: (%s, %s) height %s · surface Y≈%s · %s blocks away",
+  "config.terrain_recast.terrain.vertical_scale": "Vertical Scale",
+  "config.terrain_recast.terrain.vertical_scale.tooltip": "Global height multiplier: 1.0 default; higher means taller peaks and deeper trenches."
 }

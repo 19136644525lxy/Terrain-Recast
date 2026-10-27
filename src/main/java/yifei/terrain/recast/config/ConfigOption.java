@@ -11,8 +11,10 @@ package yifei.terrain.recast.config;
 public enum ConfigOption {
 
     // ===== 地形 ====
-    MOUNTAIN_AMP("terrain.mountain_amp", Category.TERRAIN, 900.0, 0, 3000,
+    MOUNTAIN_AMP("terrain.mountain_amp", Category.TERRAIN, 1100.0, 0, 3000,
             "山脉振幅", "Mountain Amplitude"),
+    VERTICAL_SCALE("terrain.vertical_scale", Category.TERRAIN, 1.0, 0.3, 3.0,
+            "垂直缩放", "Vertical Scale"),
     INTERIOR_AMP("terrain.interior_amp", Category.TERRAIN, 55.0, 0, 600,
             "内陆起伏", "Interior Relief"),
     ABYSS_AMP("terrain.abyss_amp", Category.TERRAIN, 16.0, 0, 120,

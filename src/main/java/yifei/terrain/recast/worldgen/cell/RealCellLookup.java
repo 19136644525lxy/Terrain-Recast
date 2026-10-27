@@ -51,6 +51,15 @@ public final class RealCellLookup implements CellLookup {
     private static final double PLATEAU_SCALE = 1500.0;
     /** 群系族（原版/自定义）选择噪声波长。太小会碎，太大会整片只有一族，700 格约 1.5 个周期/千米。 */
     private static final double BIOME_FAMILY_SCALE = 700.0;
+    /** 山体区域掩码波长（方块）：决定大片山区的位置。 */
+    private static final double MASSIF_SCALE = 1600.0;
+    /**
+     * 地表高度上限（相对海平面）。世界最高 Y=2031，海平面约 63，
+     * 再留 100 格余量避免顶到建筑上限后地形被截平。
+     */
+    private static final double MAX_TERRAIN_HEIGHT = 1860.0;
+    /** 软上限起点：低于这个高度完全不受影响。 */
+    private static final double SOFT_CAP_KNEE = 1200.0;
     /** 高原台面高度（相对海平面，方块）。 */
     private static final double PLATEAU_LEVEL = 210.0;
     /** 裂谷下切深度（方块）。 */
@@ -106,6 +115,8 @@ public final class RealCellLookup implements CellLookup {
     private final double erosionRound;
     private final double minContinentHeight;
     private final double spawnLandRadius;
+    /** 全局垂直缩放：一次调高山/深海，参考 TerraForged 的 globalVerticalScale。 */
+    private final double verticalScale;
 
     private final LifecycleBoundCache<Long, Cell> cache = new LifecycleBoundCache<>(CACHE_MAX);
     private final ObjectPool<Cell> pool = new ObjectPool<>(Cell::new, Cell::reset);
@@ -122,13 +133,14 @@ public final class RealCellLookup implements CellLookup {
         // 从配置读取地形系数，无配置/未知 key 时回落默认字面量
         this.coastSpan = ConfigHandler.tuning("terrain.coast_span", 30.0);
         this.latitudeScale = ConfigHandler.tuning("climate.latitude_scale", 6000.0);
-        this.mountainAmp = ConfigHandler.tuning("terrain.mountain_amp", 900.0);
+        this.mountainAmp = ConfigHandler.tuning("terrain.mountain_amp", 1100.0);
         this.interiorAmp = ConfigHandler.tuning("terrain.interior_amp", 55.0);
         this.abyssAmp = ConfigHandler.tuning("terrain.abyss_amp", 16.0);
         this.trenchDepth = ConfigHandler.tuning("terrain.trench_depth", 60.0);
         this.erosionRound = ConfigHandler.tuning("terrain.erosion_round", 0.55);
         this.minContinentHeight = ConfigHandler.tuning("terrain.min_continent_height", 8.0);
         this.spawnLandRadius = ConfigHandler.tuning("general.spawn_land_radius", 1400.0);
+        this.verticalScale = ConfigHandler.tuning("terrain.vertical_scale", 1.0);
     }
 
     /** 合成板块坐标的缓存 key。 */
@@ -352,7 +364,14 @@ public final class RealCellLookup implements CellLookup {
         double erodeNoise = terrainNoise.fbm(blockX, blockZ, EROSION_ENVELOPE_SCALE, 2, 2.0, 0.5);
         double erode = smoothstep(clamp(erodeNoise * 0.5 + 0.5, 0.0, 1.0));
         double sharpness = 1.0 - erode * erosionRound;
-        double uplift = landness * (0.45 + 0.55 * edge) * ridge * mountainAmp * sharpness;
+        // 山体区域掩码：低频（1600 格）决定"这一带是不是山区"。
+        // 参考 TerraForged（山脉类型 weight=2.0）与 Terralith（大尺度 offset 样条）：
+        // 高山应该成片出现，而不是每条脊线一样高。增益 0.8~1.7，均值约 1.25。
+        double massif = smoothstep(clamp(
+                terrainNoise.fbm(blockX, blockZ, MASSIF_SCALE, 2, 2.0, 0.5) * 1.1 + 0.15, 0.0, 1.0));
+        double massifGain = 0.8 + 0.9 * massif;
+        double uplift = landness * (0.45 + 0.55 * edge) * massifGain
+                * ridge * mountainAmp * sharpness * verticalScale;
 
         // 3) 海沟：只在陆洋边界附近下切，山脊处减弱
         double trench = (1.0 - landness) * edge * (1.0 - 0.5 * ridge) * trenchDepth;
@@ -384,6 +403,12 @@ public final class RealCellLookup implements CellLookup {
 
         // 陆地软下限：权重随陆地程度渐入，海陆交界不留硬边
         h = h + landness * (softMax(h, minContinentHeight) - h);
+        // 软上限：depth 的 y 梯度只到 Y=2031，再高整列都会被推成实心。
+        // 用"软膝"压缩而不是硬截断，避免出现一片 1860 的平顶山。
+        if (h > SOFT_CAP_KNEE) {
+            h = SOFT_CAP_KNEE + (MAX_TERRAIN_HEIGHT - SOFT_CAP_KNEE)
+                    * (1.0 - Math.exp(-(h - SOFT_CAP_KNEE) / (MAX_TERRAIN_HEIGHT - SOFT_CAP_KNEE)));
+        }
         return h;
     }
 

@@ -93,5 +93,7 @@
   "command.terrain_recast.peak.entry": "%s. (%s, %s) 高度 %s 格 · 地表 Y≈%s · 距离 %s 格",
   "command.terrain_recast.peak.none": "半径 %s 格内没有高度 ≥ %s 格的地形",
   "command.terrain_recast.peak.not_ready": "地形数据尚未就绪",
-  "command.terrain_recast.peak.highest": "半径内最高点：(%s, %s) 高度 %s 格 · 地表 Y≈%s · 距离 %s 格"
+  "command.terrain_recast.peak.highest": "半径内最高点：(%s, %s) 高度 %s 格 · 地表 Y≈%s · 距离 %s 格",
+  "config.terrain_recast.terrain.vertical_scale": "垂直缩放",
+  "config.terrain_recast.terrain.vertical_scale.tooltip": "整体高度倍率：1.0 为默认，调大后山峰更高、海沟更深（参考 TerraForged 的 globalVerticalScale）。"
 }
