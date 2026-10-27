@@ -31,10 +31,10 @@ public final class RealCellLookup implements CellLookup {
     private static final int CACHE_MAX = 4096;
 
     /** 板块网格尺度（方块）。384 方块 ≈ 24 区块。 */
-    public static final int PLATE_CELL_SIZE = 384;
+    public static final int PLATE_CELL_SIZE = 900;
 
     /** 板块边界影响带宽度（方块）：碰撞造山/海沟在此范围内衰减到 0。 */
-    private static final double EDGE_SPAN = PLATE_CELL_SIZE * 0.55;
+    private static final double EDGE_SPAN = PLATE_CELL_SIZE * 0.30;
 
     /** 板块内部次级山脉：低频噪声波长（方块）。 */
     private static final double INTERIOR_SCALE = 900.0;
@@ -61,7 +61,7 @@ public final class RealCellLookup implements CellLookup {
     /** 软上限起点：低于这个高度完全不受影响。 */
     private static final double SOFT_CAP_KNEE = 1200.0;
     /** 高原台面高度（相对海平面，方块）。 */
-    private static final double PLATEAU_LEVEL = 210.0;
+    private static final double PLATEAU_LEVEL = 170.0;
     /** 裂谷下切深度（方块）。 */
     private static final double RIFT_DEPTH = 75.0;
     /** 火山弧抬升高度（方块）。 */
@@ -80,7 +80,7 @@ public final class RealCellLookup implements CellLookup {
     private static final double EPS = 1.0;
 
     // 陆/洋基准高度（方块，相对海平面的偏移）
-    private static final double CONTINENT_BASE = 32.0;
+    private static final double CONTINENT_BASE = 22.0;
     private static final double OCEAN_BASE = -35.0;
 
     /** 大陆度噪声波长（方块）。必须明显小于视野尺度，否则整个可见区域的大陆度恒定、地形趋平。 */
@@ -134,7 +134,7 @@ public final class RealCellLookup implements CellLookup {
         this.coastSpan = ConfigHandler.tuning("terrain.coast_span", 30.0);
         this.latitudeScale = ConfigHandler.tuning("climate.latitude_scale", 6000.0);
         this.mountainAmp = ConfigHandler.tuning("terrain.mountain_amp", 1100.0);
-        this.interiorAmp = ConfigHandler.tuning("terrain.interior_amp", 55.0);
+        this.interiorAmp = ConfigHandler.tuning("terrain.interior_amp", 42.0);
         this.abyssAmp = ConfigHandler.tuning("terrain.abyss_amp", 16.0);
         this.trenchDepth = ConfigHandler.tuning("terrain.trench_depth", 60.0);
         this.erosionRound = ConfigHandler.tuning("terrain.erosion_round", 0.55);
@@ -375,20 +375,18 @@ public final class RealCellLookup implements CellLookup {
         double erodeNoise = terrainNoise.fbm(blockX, blockZ, EROSION_ENVELOPE_SCALE, 2, 2.0, 0.5);
         double erode = smoothstep(clamp(erodeNoise * 0.5 + 0.5, 0.0, 1.0));
         double sharpness = 1.0 - erode * erosionRound;
-        // 造山带权重：地质上"山脉沿板块边界成带"，板内只有零星山系。
-        // 旧公式 (0.45 + 0.55*edge) 让板内也有 45% 抬升 → 全世界都是山。
-        // 新公式：边界主导（0.60 基础 + 0.40 汇聚加成），板内只留 0.35 的弱山系，
-        // 并且板内山系会被 edge 反向削弱，保证"边界成带、内部平坦"。
+        // 造山带权重：山脉沿板块边界成带，且带要**窄**（edge^1.6），
+        // 板内只留很弱的山系（0.15），大部分陆地应该是平原/丘陵。
         double boundaryTypeForOrogen = boundaryTypeAt(blockX, blockZ);
         double arcForOrogen = arcMaskAt(boundaryTypeForOrogen, edge);
-        // 板内山系：低频（1600 格）决定"这一带有没有山"
         double massif = smoothstep(clamp(
                 terrainNoise.fbm(blockX, blockZ, MASSIF_SCALE, 2, 2.0, 0.5) * 1.1 + 0.15, 0.0, 1.0));
-        double orogen = edge * (0.60 + 0.40 * arcForOrogen);
-        double intraplate = (1.0 - edge) * massif * 0.35;
+        double belt = Math.pow(clamp(edge, 0.0, 1.0), 6.0);
+        double orogen = belt * (1.00 + 0.35 * arcForOrogen);
+        double intraplate = (1.0 - edge) * massif * 0.18;
         double orogenGain = clamp(orogen + intraplate, 0.0, 1.2);
         // 脊线用平方加权：只有真正的脊顶才高，山体整体变矮、变少，但峰顶仍有高度
-        double ridgeSharp = ridge * ridge;
+        double ridgeSharp = ridge * ridge * ridge;
         double uplift = landness * orogenGain
                 * ridgeSharp * mountainAmp * sharpness * verticalScale;
 

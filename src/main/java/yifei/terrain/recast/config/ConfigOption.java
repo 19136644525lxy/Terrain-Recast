@@ -15,7 +15,7 @@ public enum ConfigOption {
             "山脉振幅", "Mountain Amplitude"),
     VERTICAL_SCALE("terrain.vertical_scale", Category.TERRAIN, 1.0, 0.3, 3.0,
             "垂直缩放", "Vertical Scale"),
-    INTERIOR_AMP("terrain.interior_amp", Category.TERRAIN, 55.0, 0, 600,
+    INTERIOR_AMP("terrain.interior_amp", Category.TERRAIN, 42.0, 0, 600,
             "内陆起伏", "Interior Relief"),
     ABYSS_AMP("terrain.abyss_amp", Category.TERRAIN, 16.0, 0, 120,
             "深海起伏", "Abyssal Relief"),
