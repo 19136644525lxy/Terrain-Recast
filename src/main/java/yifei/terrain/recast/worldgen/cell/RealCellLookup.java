@@ -375,20 +375,27 @@ public final class RealCellLookup implements CellLookup {
         double erodeNoise = terrainNoise.fbm(blockX, blockZ, EROSION_ENVELOPE_SCALE, 2, 2.0, 0.5);
         double erode = smoothstep(clamp(erodeNoise * 0.5 + 0.5, 0.0, 1.0));
         double sharpness = 1.0 - erode * erosionRound;
-        // 造山带权重：山脉沿板块边界成带，且带要**窄**（edge^1.6），
-        // 板内只留很弱的山系（0.15），大部分陆地应该是平原/丘陵。
+        // ===== 山脉分两种形态（都要有，不然全图只剩刀片山）=====
+        // 瘦山：窄造山带（edge^6）× 尖锐脊线（ridge³）→ 阿尔卑斯式刃脊
+        // 胖山：宽造山带（edge^2.2）× 低频 massif × 平缓脊线 → 高原式山体/山块
         double boundaryTypeForOrogen = boundaryTypeAt(blockX, blockZ);
         double arcForOrogen = arcMaskAt(boundaryTypeForOrogen, edge);
         double massif = smoothstep(clamp(
                 terrainNoise.fbm(blockX, blockZ, MASSIF_SCALE, 2, 2.0, 0.5) * 1.1 + 0.15, 0.0, 1.0));
-        double belt = Math.pow(clamp(edge, 0.0, 1.0), 6.0);
-        double orogen = belt * (1.00 + 0.35 * arcForOrogen);
-        double intraplate = (1.0 - edge) * massif * 0.18;
-        double orogenGain = clamp(orogen + intraplate, 0.0, 1.2);
-        // 脊线用平方加权：只有真正的脊顶才高，山体整体变矮、变少，但峰顶仍有高度
+        // 只有约三成区域够格成为"山块"，避免胖山铺满地图
+        double broadMask = smoothstep(clamp(massif * 1.5 - 0.45, 0.0, 1.0));
+
+        double beltSharp = Math.pow(clamp(edge, 0.0, 1.0), 6.0);
+        double beltWide = Math.pow(clamp(edge, 0.0, 1.0), 2.2);
         double ridgeSharp = ridge * ridge * ridge;
-        double uplift = landness * orogenGain
-                * ridgeSharp * mountainAmp * sharpness * verticalScale;
+        double ridgeBroad = 0.55 + 0.45 * ridge;
+
+        double sharpMass = beltSharp * (1.00 + 0.35 * arcForOrogen) * ridgeSharp;
+        double broadMass = broadMask * (0.30 + 0.70 * clamp(edge, 0.0, 1.0)) * (0.75 + 0.25 * arcForOrogen) * ridgeBroad;
+        double intraplate = (1.0 - edge) * massif * 0.10;
+        double orogenGain = clamp(1.00 * sharpMass + 0.78 * broadMass + intraplate, 0.0, 1.25);
+
+        double uplift = landness * orogenGain * mountainAmp * sharpness * verticalScale;
 
         // 3) 海沟：只在陆洋边界附近下切，山脊处减弱
         double trench = (1.0 - landness) * edge * (1.0 - 0.5 * ridge) * trenchDepth;
