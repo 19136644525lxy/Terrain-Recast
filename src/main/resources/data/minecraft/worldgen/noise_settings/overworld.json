@@ -113,7 +113,7 @@
     "continents": "minecraft:overworld/continents",
     "depth": "minecraft:overworld/depth",
     "erosion": "minecraft:overworld/erosion",
-    "final_density": "minecraft:overworld/final_density",
+    "final_density": "terrain_recast:terrain/final_density",
     "ridges": "minecraft:overworld/ridges",
     "temperature": "minecraft:overworld/temperature",
     "vegetation": "minecraft:overworld/vegetation"

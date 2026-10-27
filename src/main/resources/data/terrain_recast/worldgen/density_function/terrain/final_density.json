@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:add",
+  "left": {
+    "type": "minecraft:min",
+    "left": "terrain_recast:terrain/heightfield",
+    "right": "minecraft:overworld/caves/noodle"
+  },
+  "right": {
+    "type": "minecraft:beardifier"
+  }
+}

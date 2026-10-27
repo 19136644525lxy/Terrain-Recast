@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:squeeze",
+  "input": {
+    "type": "minecraft:mul",
+    "left": 0.05,
+    "right": {
+      "type": "minecraft:add",
+      "left": {
+        "type": "minecraft:add",
+        "left": 63.0,
+        "right": "terrain_recast:landform_height"
+      },
+      "right": {
+        "type": "minecraft:mul",
+        "left": -1.0,
+        "right": {
+          "type": "minecraft:gradient",
+          "axis": "y",
+          "from_coordinate": -512,
+          "from_value": -512.0,
+          "to_coordinate": 2031,
+          "to_value": 2031.0
+        }
+      }
+    }
+  }
+}
