@@ -88,5 +88,9 @@
   "biome.terrain_recast.arc_grassland": "Volcanic Arc Grassland",
   "biome.terrain_recast.arc_forest": "Volcanic Arc Forest",
   "biome.terrain_recast.arc_desert": "Volcanic Arc Desert",
-  "biome.terrain_recast.arc_savanna": "Volcanic Arc Savanna"
+  "biome.terrain_recast.arc_savanna": "Volcanic Arc Savanna",
+  "command.terrain_recast.peak.header": "Top %s peaks within %s blocks:",
+  "command.terrain_recast.peak.entry": "%s. (%s, %s) height %s · surface Y≈%s · %s blocks away",
+  "command.terrain_recast.peak.none": "No terrain >= %s blocks within %s blocks",
+  "command.terrain_recast.peak.not_ready": "Terrain data is not ready yet"
 }

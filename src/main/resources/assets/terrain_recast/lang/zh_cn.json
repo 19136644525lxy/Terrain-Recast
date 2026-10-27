@@ -88,5 +88,9 @@
   "biome.terrain_recast.arc_grassland": "火山弧草原",
   "biome.terrain_recast.arc_forest": "火山弧森林",
   "biome.terrain_recast.arc_desert": "火山弧荒漠",
-  "biome.terrain_recast.arc_savanna": "火山弧稀树草原"
+  "biome.terrain_recast.arc_savanna": "火山弧稀树草原",
+  "command.terrain_recast.peak.header": "半径 %s 格内最高的 %s 座山：",
+  "command.terrain_recast.peak.entry": "%s. (%s, %s) 高度 %s 格 · 地表 Y≈%s · 距离 %s 格",
+  "command.terrain_recast.peak.none": "半径 %s 格内没有高度 ≥ %s 格的地形",
+  "command.terrain_recast.peak.not_ready": "地形数据尚未就绪"
 }
