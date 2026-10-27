@@ -417,3 +417,39 @@ L6 群系、矿床、植被等其它功能不受影响。
 2. **群系表接管**：生成 `dimension/overworld.json` 的内联 multi_noise 列表
    （由 Whittaker + LANDFORM 映射成 ParameterPoint），**不引入 TerraBlender**。
 3. 每个群系的数据包内容（地表规则、树种、地物、水色）。
+
+---
+
+## 第一批自定义群系（2026-10-27）· 链路验证
+
+按"先 2 个验证链路"的计划做的，**已跑通**。
+
+### 做法（照 Terralith）
+
+- 新增 `data/terrain_recast/worldgen/biome/{plateau,rift}.json`
+- 新增 `data/minecraft/dimension/overworld.json`：**内联 multi_noise 群系表**接管群系源
+  （原版 overworld 的 dimension 是代码定义的，覆写这个路径即可整体替换，不需要 TerraBlender）
+
+当前是**验证用的最小表**（4 条）：海洋 / 沙滩按 continentalness 分，陆地按温度分成
+`terrain_recast:plateau`（冷）与 `terrain_recast:rift`（暖）。
+
+### 踩到的 26.3 格式差异
+
+| 项 | 旧写法 | 26.3 |
+|---|---|---|
+| `carvers` | `{"air": [...]}` | **扁平列表** `["minecraft:cave", ...]` |
+| `ResourceKey` 取 id | `location()` | **`identifier()`** |
+| 群系 codec | — | `has_precipitation` / `temperature` / `downfall` / `effects` /
+`carvers` + `features`（**11 个装饰步骤，缺一不可**）必填 |
+
+### 验证
+
+- `runServer` 无注册表报错，启动 1.75 s
+- 探针打印出生点 5×5 采样点的实际群系：**plateau 与 rift 都出现**（按温度切换）
+  → dimension 覆写 + 自定义 biome + 实际选中，三段全通
+
+### 现状与下一步
+
+- 世界现在只有 4 个群系（这是验证表，不是最终设计）
+- 下一步：把表扩成"Whittaker 温湿 × LANDFORM × 海拔"的完整映射，
+  并让 `LANDFORM` 真正影响地形（火山弧/裂谷/高原的形态）

@@ -1,0 +1,43 @@
+{
+  "has_precipitation": true,
+  "temperature": 0.65,
+  "downfall": 0.2,
+  "effects": {
+    "sky_color": 8103167,
+    "fog_color": 12638463,
+    "water_color": 4159204,
+    "water_fog_color": 329011,
+    "mood_sound": {
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000,
+      "block_search_extent": 8,
+      "offset": 2.5
+    }
+  },
+  "carvers": [
+    "minecraft:cave",
+    "minecraft:cave_extra_underground",
+    "minecraft:canyon"
+  ],
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "minecraft:ore_coal_upper",
+      "minecraft:ore_iron_upper",
+      "minecraft:ore_gold_extra"
+    ],
+    [],
+    [],
+    [
+      "minecraft:patch_grass_plain",
+      "minecraft:patch_dead_bush",
+      "minecraft:patch_cactus_desert"
+    ],
+    []
+  ]
+}
