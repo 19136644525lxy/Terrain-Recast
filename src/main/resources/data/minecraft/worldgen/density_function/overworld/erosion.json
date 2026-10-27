@@ -1,4 +1,4 @@
 {
   "type": "terrain_recast:cell_field",
-  "cell_field": "EROSION"
+  "cell_field": "BIOME_FAMILY"
 }

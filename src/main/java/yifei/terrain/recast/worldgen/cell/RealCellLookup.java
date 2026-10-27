@@ -49,6 +49,8 @@ public final class RealCellLookup implements CellLookup {
     private static final double BOUNDARY_TYPE_SCALE = 2400.0;
     /** 高原分布噪声波长。 */
     private static final double PLATEAU_SCALE = 1500.0;
+    /** 群系族（原版/自定义）选择噪声波长。太小会碎，太大会整片只有一族，700 格约 1.5 个周期/千米。 */
+    private static final double BIOME_FAMILY_SCALE = 700.0;
     /** 高原台面高度（相对海平面，方块）。 */
     private static final double PLATEAU_LEVEL = 210.0;
     /** 裂谷下切深度（方块）。 */
@@ -237,6 +239,10 @@ public final class RealCellLookup implements CellLookup {
         }
         if (field == Cell.Field.WEIRDNESS) {
             return clamp(terrainNoise.fbm(blockX, blockZ, WEIRDNESS_SCALE, 3, 2.0, 0.5) * 1.4, -1.0, 1.0);
+        }
+        if (field == Cell.Field.BIOME_FAMILY) {
+            // 群系族选择器：低频噪声，正负各约一半 → 原版/自定义群系均匀交错
+            return terrainNoise.fbm(blockX, blockZ, BIOME_FAMILY_SCALE, 2, 2.0, 0.5);
         }
         if (field == Cell.Field.RIVER_BAND) {
             // 水系改动已下线：河带恒为 0（ridges 覆写仍引用该字段，保持数据包可加载）。

@@ -49,6 +49,8 @@ public final class PreviewDump {
         final int centerZ = 0;
         int[] px = new int[w * h];
         int[] counts = new int[4]; // plain / plateau / arc / rift
+        int familyPositive = 0;
+        int familyTotal = 0;
         long start = System.currentTimeMillis();
         RealCellLookup lookup = new RealCellLookup(seed);
         try {
@@ -74,6 +76,8 @@ public final class PreviewDump {
                     double height = lookup.sampleField(Cell.Field.TERRAIN_HEIGHT, bx, bz);
                     if (height < 0) color = 0xFF1E3A55;
                     px[y * w + x] = color;
+                    if (lookup.sampleField(Cell.Field.BIOME_FAMILY, bx, bz) > 0) familyPositive++;
+                    familyTotal++;
                 }
             }
         } finally {
@@ -83,8 +87,9 @@ public final class PreviewDump {
         BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         image.setRGB(0, 0, w, h, px, 0, w);
         ImageIO.write(image, "png", new File(dir, "landform_" + seed + ".png"));
-        System.out.printf("landform seed=%d  %d ms  plain=%d plateau=%d arc=%d rift=%d%n",
-                seed, elapsed, counts[0], counts[1], counts[2], counts[3]);
+        System.out.printf("landform seed=%d  %d ms  plain=%d plateau=%d arc=%d rift=%d  familyPositive=%.1f%%%n",
+                seed, elapsed, counts[0], counts[1], counts[2], counts[3],
+                100.0 * familyPositive / Math.max(1, familyTotal));
     }
 
     /** 临时：把 L6 群系分类画出来（每种群系一个颜色），检查气候带是否合理。 */

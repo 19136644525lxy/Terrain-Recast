@@ -23,16 +23,6 @@
     "minecraft:canyon"
   ],
   "features": [
-    [], [], [], [], [], [],
-    [
-      "minecraft:ore_coal_upper",
-      "minecraft:ore_iron_upper"
-    ],
-    [],
-    [],
-    [
-      "minecraft:patch_dead_bush","minecraft:patch_cactus_desert"
-    ],
-    []
+    [], [], [], [], [], [], [], [], [], [], []
   ]
 }

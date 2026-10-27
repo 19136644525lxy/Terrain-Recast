@@ -37,8 +37,11 @@ public final class VegetationWorldgen {
     public static void register() {
         // 时序：RegistryBootstrap.init()（置入 FEATURE_TYPE 类型）先于本方法执行，类型已可用。
         var injection = TerrainRecastApi.getFeatureInjection();
-        injection.add(GenerationStep.Decoration.VEGETAL_DECORATION, PLACED);
+        // 只注入自定义群系：原版群系有自己的地物，混注会触发 Feature order cycle
+        injection.add(GenerationStep.Decoration.VEGETAL_DECORATION, PLACED,
+                yifei.terrain.recast.api.injection.GroupedFeatureInjection.TRC_BIOMES);
         // 覆盖物同一植被步骤追加注入，密度由 placed 数据与 Feature 内概率共同控制。
-        injection.add(GenerationStep.Decoration.VEGETAL_DECORATION, GROUND);
+        injection.add(GenerationStep.Decoration.VEGETAL_DECORATION, GROUND,
+                yifei.terrain.recast.api.injection.GroupedFeatureInjection.TRC_BIOMES);
     }
 }

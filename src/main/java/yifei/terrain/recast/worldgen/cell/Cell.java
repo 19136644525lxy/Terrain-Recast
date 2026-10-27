@@ -151,7 +151,12 @@ public final class Cell implements CellDataView {
          * 供覆写的 {@code overworld/ridges} 使用：把地貌编进 weirdness，
          * 群系表就能按地貌分带（Tectonic 的 biome_parameter 手法）。
          */
-        LANDFORM               { @Override public double get(Cell c) { return 0; } };
+        LANDFORM               { @Override public double get(Cell c) { return 0; } },
+        /**
+         * 群系族选择器：>0 用自定义群系，<0 用原版群系（低频噪声，约五五开）。
+         * 供覆写的 {@code overworld/erosion} 使用，让原版群系和自定义群系在世界里均匀混合。
+         */
+        BIOME_FAMILY           { @Override public double get(Cell c) { return 0; } };
 
         public abstract double get(Cell cell);
     }

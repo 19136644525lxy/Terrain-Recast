@@ -637,3 +637,51 @@ L6 群系、矿床、植被等其它功能不受影响。
 
 - 树的分布还是全局按 Whittaker 投，没区分地貌（arc 上也会有树）
 - 雾/天空的分地貌差异（裂谷更暗、火山弧更浑）还没做
+
+---
+
+## 原版/自定义群系混合 + 植被修复（2026-10-27）
+
+用户反馈两件事：自定义群系没植被；世界里只有自定义群系，原版的一个都没有。
+
+### 1. 自定义群系没有植被（根因）
+
+植被是靠 Fabric `BiomeModifications` + `BiomeTags.IS_OVERWORLD` 注入的，
+而**自定义群系不在这个标签里**，所以一条地物都没注入。
+
+修复：`data/minecraft/tags/worldgen/biome/is_overworld.json`（`replace: false` 合并），
+把 24 个自定义群系加进这个标签。
+
+### 2. 只有自定义群系
+
+用 `Cell.Field.BIOME_FAMILY`（700 格波长的低频噪声）驱动 `overworld/erosion`，
+群系表按 erosion 正负分族：
+
+- `erosion < 0` → 原版族：冷干 snowy_plains / 冷湿 taiga / 温干 plains / 温湿 forest /
+  热干 desert / 热湿 jungle
+- `erosion >= 0` → 自定义族：原来的 24 格矩阵（按地貌分）
+
+表项从 26 条涨到 **32 条**（2 海洋/沙滩 + 6 原版 + 24 自定义）。
+实测选择器正负比（4 个种子）：57.6% / 57.2% / 54.3% / 39.6%，平均约 52%，接近对半。
+
+### 3. Feature order cycle（新踩的坑）
+
+把 TRC 地物注入原版群系后，区块生成抛
+`Feature order cycle found, involved sources: [terrain_recast:rift_taiga, minecraft:plains]`
+
+两个原因叠加：
+- 同一批 placed feature 同时进原版群系和自定义群系，两边的特性排序冲突
+- 自定义群系 JSON 里手写的原版地物（`ore_coal_upper` / `patch_grass_plain` 等）
+  与 vanilla 群系里的相对顺序不一致
+
+修复：
+- 新增 `GroupedFeatureInjection.TRC_BIOMES` 选择器，TRC 的植被/矿床**只注入自定义群系**
+- 清空 24 个群系 JSON 的 `features`（11 个空列表），地物全部走注入
+
+### 验证
+
+- `runServer` 正常（1.38 s），无 cycle
+- `VEGCHECK terrain_recast:arc_tundra features=11 hasTrcFeature=true` → 植被注入生效
+- 群系混合采样：`minecraft:snowy_plains=7 / ocean=32 / plains=4 / desert=3 / forest=3`
+  与 20+ 个自定义群系同时存在
+- `dumpPreview` 新增 `familyPositive` 输出，方便以后校准比例

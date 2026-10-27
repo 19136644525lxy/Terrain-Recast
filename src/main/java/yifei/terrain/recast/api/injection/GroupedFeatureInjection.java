@@ -45,6 +45,16 @@ public final class GroupedFeatureInjection {
     public static final Predicate<BiomeSelectionContext> OVERWORLD =
             ctx -> ctx.hasTag(BiomeTags.IS_OVERWORLD);
 
+    /**
+     * 只选本模组的自定义群系。
+     *
+     * <p>为什么需要它：原版群系自带一批地物，如果把同一批 placed feature 同时注入
+     * 原版群系和自定义群系，两边的特性排序会互相冲突，区块生成时抛
+     * {@code Feature order cycle found}。所以 TRC 的地物只注入自己的群系。
+     */
+    public static final Predicate<BiomeSelectionContext> TRC_BIOMES =
+            ctx -> ctx.getBiomeKey().identifier().getNamespace().equals("terrain_recast");
+
     /** 登记一个注入项。返回撤销令牌。 */
     public AutoCloseable add(GenerationStep.Decoration step,
                              ResourceKey<PlacedFeature> placed,

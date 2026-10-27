@@ -36,9 +36,11 @@ public final class OreDepositWorldgen {
     public static void register() {
         var injection = TerrainRecastApi.getFeatureInjection();
         var step = GenerationStep.Decoration.UNDERGROUND_ORES;
-        injection.add(step, COAL);
-        injection.add(step, IRON);
-        injection.add(step, GOLD);
-        injection.add(step, DIAMOND);
+        // 只注入自定义群系，避免与原版群系的地物图产生 Feature order cycle
+        var ours = yifei.terrain.recast.api.injection.GroupedFeatureInjection.TRC_BIOMES;
+        injection.add(step, COAL, ours);
+        injection.add(step, IRON, ours);
+        injection.add(step, GOLD, ours);
+        injection.add(step, DIAMOND, ours);
     }
 }
