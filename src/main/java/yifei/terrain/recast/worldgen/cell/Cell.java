@@ -145,7 +145,13 @@ public final class Cell implements CellDataView {
         /** 岩性。本质离散量：取最近板块整数值，不做软混合。 */
         LITHOLOGY              { @Override public double get(Cell c) { return c.lithology; } },
         /** L6 群系分类（Whittaker 查表结果，取值见 {@code WhittakerBiome}）。 */
-        BIOME                  { @Override public double get(Cell c) { return c.biomeCandidate; } };
+        BIOME                  { @Override public double get(Cell c) { return c.biomeCandidate; } },
+        /**
+         * L1 大地貌编码（裂谷 -0.6 / 平原 0 / 高原 0.35 / 火山弧 0.7）。
+         * 供覆写的 {@code overworld/ridges} 使用：把地貌编进 weirdness，
+         * 群系表就能按地貌分带（Tectonic 的 biome_parameter 手法）。
+         */
+        LANDFORM               { @Override public double get(Cell c) { return 0; } };
 
         public abstract double get(Cell cell);
     }

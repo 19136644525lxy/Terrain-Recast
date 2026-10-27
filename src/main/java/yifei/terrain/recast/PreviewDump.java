@@ -36,7 +36,55 @@ public final class PreviewDump {
             System.out.println("wrote " + out + " in " + elapsed + " ms");
             printHeightStats(seed);
             dumpBiomes(dir, seed);
+            dumpLandforms(dir, seed);
         }
+    }
+
+    /** 临时：把 L1 大地貌画出来——裂谷红、火山弧橙、高原黄、平原灰、海蓝。 */
+    private static void dumpLandforms(File dir, long seed) throws Exception {
+        final int w = 480;
+        final int h = 240;
+        final int bpp = 8;
+        final int centerX = 6000;
+        final int centerZ = 0;
+        int[] px = new int[w * h];
+        int[] counts = new int[4]; // plain / plateau / arc / rift
+        long start = System.currentTimeMillis();
+        RealCellLookup lookup = new RealCellLookup(seed);
+        try {
+            for (int y = 0; y < h; y++) {
+                int bz = centerZ + (y - h / 2) * bpp;
+                for (int x = 0; x < w; x++) {
+                    int bx = centerX + (x - w / 2) * bpp;
+                    double code = lookup.sampleField(Cell.Field.LANDFORM, bx, bz);
+                    int color;
+                    if (code > 0.55) {
+                        color = 0xFFE07A2B; // 火山弧
+                        counts[2]++;
+                    } else if (code > 0.2) {
+                        color = 0xFFE8D07A; // 高原
+                        counts[1]++;
+                    } else if (code < -0.2) {
+                        color = 0xFFC0392B; // 裂谷
+                        counts[3]++;
+                    } else {
+                        color = 0xFF7F8C8D;
+                        counts[0]++;
+                    }
+                    double height = lookup.sampleField(Cell.Field.TERRAIN_HEIGHT, bx, bz);
+                    if (height < 0) color = 0xFF1E3A55;
+                    px[y * w + x] = color;
+                }
+            }
+        } finally {
+            lookup.close();
+        }
+        long elapsed = System.currentTimeMillis() - start;
+        BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        image.setRGB(0, 0, w, h, px, 0, w);
+        ImageIO.write(image, "png", new File(dir, "landform_" + seed + ".png"));
+        System.out.printf("landform seed=%d  %d ms  plain=%d plateau=%d arc=%d rift=%d%n",
+                seed, elapsed, counts[0], counts[1], counts[2], counts[3]);
     }
 
     /** 临时：把 L6 群系分类画出来（每种群系一个颜色），检查气候带是否合理。 */

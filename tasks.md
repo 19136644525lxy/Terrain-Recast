@@ -453,3 +453,35 @@ L6 群系、矿床、植被等其它功能不受影响。
 - 世界现在只有 4 个群系（这是验证表，不是最终设计）
 - 下一步：把表扩成"Whittaker 温湿 × LANDFORM × 海拔"的完整映射，
   并让 `LANDFORM` 真正影响地形（火山弧/裂谷/高原的形态）
+
+---
+
+## L1 大地貌（2026-10-27）· 高原 / 裂谷 / 火山弧
+
+### 做法（Tectonic 风格：地形与群系共用一套信号）
+
+`Cell.Field.LANDFORM` 输出地貌编码，`overworld/ridges` 覆写直接吃它，
+于是 **weirdness = 地貌码**，群系表按 weirdness 分带就能跟地貌对齐。
+
+| 地貌 | 编码 | 生成规则 | 地形效果 |
+|---|---|---|---|
+| 裂谷 RIFT | -0.6 | 张裂边界带（`boundaryType > 0`）× 边界接近度 > 0.30 | 沿边界下切 75 格 |
+| 火山弧 ARC | 0.7 | 汇聚边界带（`boundaryType < 0`）× 边界接近度 > 0.30 | 沿边界抬升 210 格，成串珠山链 |
+| 高原 PLATEAU | 0.35 | 板块内部（`1-edge`）× 低频分布 > 0.45 | 向台面高度 210 收敛并压平 |
+| 平原 PLAIN | 0.0 | 其余陆地 | 无 |
+
+三个掩码抽成 `riftMaskAt / arcMaskAt / plateauMaskAt`，**地形塑形和群系分带共用同一份**，
+避免两处各算一套导致地貌与群系错位。
+
+### 验证
+
+- 离线地貌图（`temp/preview_dump/landform_*.png`）：火山弧沿板块边界成网、高原成斑块，
+  四个种子都能出到全部四类（plain 8–10 万 px、arc 1–2 万、rift 1–1.3 万、plateau 0.3–1.4 万）
+- 实机探针：`landform=-0.60 → terrain_recast:rift`、`0.35 → plateau`、`0.0 → plateau`
+  （海洋点仍是 `minecraft:ocean`，因为海陆由 continentalness 先分）
+- 高度分布未明显恶化：seed 1 的 p50 270、p90 576、max 967
+
+### 下一步
+
+- 火山弧还没有对应群系（现在落到 plateau），要补 `terrain_recast:arc`
+- 群系表要扩成完整的"温湿 × 地貌"矩阵

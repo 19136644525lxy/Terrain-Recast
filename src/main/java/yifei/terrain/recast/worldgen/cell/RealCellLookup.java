@@ -43,6 +43,25 @@ public final class RealCellLookup implements CellLookup {
     private static final int LANDFORM_PLATEAU = 1;
     private static final int LANDFORM_DEEP_OCEAN = 5;
 
+    // ===== L1 大地貌（高原 / 裂谷 / 火山弧）=====
+
+    /** 边界类型噪声波长：>0 张裂、<0 汇聚，沿板块边界分段变化。 */
+    private static final double BOUNDARY_TYPE_SCALE = 2400.0;
+    /** 高原分布噪声波长。 */
+    private static final double PLATEAU_SCALE = 1500.0;
+    /** 高原台面高度（相对海平面，方块）。 */
+    private static final double PLATEAU_LEVEL = 210.0;
+    /** 裂谷下切深度（方块）。 */
+    private static final double RIFT_DEPTH = 75.0;
+    /** 火山弧抬升高度（方块）。 */
+    private static final double ARC_HEIGHT = 210.0;
+
+    /** LANDFORM 编码：给群系表的 weirdness 分带用。 */
+    public static final double LANDFORM_CODE_RIFT = -0.6;
+    public static final double LANDFORM_CODE_PLAIN = 0.0;
+    public static final double LANDFORM_CODE_PLATEAU = 0.35;
+    public static final double LANDFORM_CODE_ARC = 0.7;
+
     /** 出生点附近强制为大陆的板块半径（板块数），保证出生区块是陆地。 */
     private static final int SPAWN_SAFE_PLATES = 1;
 
@@ -207,6 +226,15 @@ public final class RealCellLookup implements CellLookup {
         if (field == Cell.Field.MOISTURE) {
             return moisture(blockX, blockZ);
         }
+        if (field == Cell.Field.LANDFORM) {
+            // L1 大地貌编码：与地形塑形共用同一套掩码
+            double landness = landnessAt(blockX, blockZ);
+            if (landness < 0.5) return LANDFORM_CODE_PLAIN; // 海里不标地貌
+            if (riftMaskAt(blockX, blockZ, edge) > 0.30) return LANDFORM_CODE_RIFT;
+            if (arcMaskAt(blockX, blockZ, edge) > 0.30) return LANDFORM_CODE_ARC;
+            if (plateauMaskAt(blockX, blockZ, edge, landness) > 0.45) return LANDFORM_CODE_PLATEAU;
+            return LANDFORM_CODE_PLAIN;
+        }
         if (field == Cell.Field.WEIRDNESS) {
             return clamp(terrainNoise.fbm(blockX, blockZ, WEIRDNESS_SCALE, 3, 2.0, 0.5) * 1.4, -1.0, 1.0);
         }
@@ -254,6 +282,29 @@ public final class RealCellLookup implements CellLookup {
     /** 山脊强度 0~1（ridged 噪声）。 */
     private double ridgeAt(int blockX, int blockZ) {
         return 1.0 - Math.abs(terrainNoise.fbm(blockX, blockZ, MOUNTAIN_SCALE, 3, 2.0, 0.5));
+    }
+
+    // ===== L1 大地貌掩码（地形塑形与群系分带共用同一套，避免两处漂移）=====
+
+    /** 张裂边界掩码 0~1（裂谷）。 */
+    private double riftMaskAt(int blockX, int blockZ, double edge) {
+        double type = terrainNoise.fbm(blockX, blockZ, BOUNDARY_TYPE_SCALE, 2, 2.0, 0.5);
+        double divergent = smoothstep(clamp((type - 0.02) * 4.0, 0.0, 1.0));
+        return clamp(edge * divergent, 0.0, 1.0);
+    }
+
+    /** 汇聚边界掩码 0~1（火山弧）。 */
+    private double arcMaskAt(int blockX, int blockZ, double edge) {
+        double type = terrainNoise.fbm(blockX, blockZ, BOUNDARY_TYPE_SCALE, 2, 2.0, 0.5);
+        double convergent = smoothstep(clamp((-type - 0.02) * 4.0, 0.0, 1.0));
+        return clamp(edge * convergent, 0.0, 1.0);
+    }
+
+    /** 高原掩码 0~1：板块内部 + 低频分布。 */
+    private double plateauMaskAt(int blockX, int blockZ, double edge, double landness) {
+        double plateauNoise = smoothstep(clamp(
+                terrainNoise.fbm(blockX, blockZ, PLATEAU_SCALE, 2, 2.0, 0.5) * 0.5 + 0.5, 0.0, 1.0));
+        return clamp(landness * (1.0 - edge) * plateauNoise, 0.0, 1.0);
     }
 
     /** 温度：纬向带 + 低频扰动 + 海拔递减。原版语义区间 [-1, 1]。 */
@@ -309,6 +360,22 @@ public final class RealCellLookup implements CellLookup {
         // 侵蚀填谷：老年地貌把低洼谷底垫高，只在陆地、低海拔处生效
         double infill = erode * landness * (1.0 - ridge) * EROSION_FILL;
         h += infill;
+
+        // ===== L1 大地貌 =====
+        double riftMask = riftMaskAt(blockX, blockZ, edge);
+        double arcMask = arcMaskAt(blockX, blockZ, edge);
+        double plateauMask = plateauMaskAt(blockX, blockZ, edge, landness);
+
+        // 高原：向台面高度收敛并压平（保留少量起伏，避免镜子一样的平面）
+        if (plateauMask > 0.01) {
+            double target = PLATEAU_LEVEL + interior * 0.35;
+            h += plateauMask * (target - h) * 0.85;
+        }
+        // 裂谷：沿张裂边界下切，山脊处切得浅一点
+        h -= landness * riftMask * RIFT_DEPTH * (0.55 + 0.45 * ridge);
+        // 火山弧：沿汇聚边界抬升成串珠状山链
+        h += landness * arcMask * ARC_HEIGHT * (0.45 + 0.55 * ridge);
+
         // 陆地软下限：权重随陆地程度渐入，海陆交界不留硬边
         h = h + landness * (softMax(h, minContinentHeight) - h);
         return h;

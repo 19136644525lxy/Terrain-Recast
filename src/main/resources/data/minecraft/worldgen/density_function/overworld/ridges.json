@@ -1,27 +1,4 @@
 {
-  "type": "minecraft:mul",
-  "left": {
-    "type": "minecraft:add",
-    "left": 0.5,
-    "right": {
-      "type": "minecraft:mul",
-      "left": 0.3,
-      "right": {
-        "type": "terrain_recast:cell_field",
-        "cell_field": "WEIRDNESS"
-      }
-    }
-  },
-  "right": {
-    "type": "minecraft:sub",
-    "left": 1,
-    "right": {
-      "type": "minecraft:mul",
-      "left": 0.95,
-      "right": {
-        "type": "terrain_recast:cell_field",
-        "cell_field": "RIVER_BAND"
-      }
-    }
-  }
+  "type": "terrain_recast:cell_field",
+  "cell_field": "LANDFORM"
 }
