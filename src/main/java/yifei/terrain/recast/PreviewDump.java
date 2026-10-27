@@ -48,7 +48,7 @@ public final class PreviewDump {
         final int centerX = 6000;
         final int centerZ = 0;
         int[] px = new int[w * h];
-        int[] counts = new int[4]; // plain / plateau / arc / rift
+        int[] counts = new int[6]; // plain / plateau / arc / rift / basin / hills
         int familyPositive = 0;
         int familyTotal = 0;
         long start = System.currentTimeMillis();
@@ -61,16 +61,22 @@ public final class PreviewDump {
                     double code = lookup.sampleField(Cell.Field.LANDFORM, bx, bz);
                     int color;
                     if (code > 0.55) {
-                        color = 0xFFE07A2B; // 火山弧
+                        color = 0xFFE07A2B; // 火山弧 / 造山带主墙
                         counts[2]++;
                     } else if (code > 0.2) {
                         color = 0xFFE8D07A; // 高原
                         counts[1]++;
-                    } else if (code < -0.2) {
+                    } else if (code < -0.45) {
                         color = 0xFFC0392B; // 裂谷
                         counts[3]++;
+                    } else if (code < -0.05) {
+                        color = 0xFF4FA3D1; // 盆地
+                        counts[4]++;
+                    } else if (code > 0.05) {
+                        color = 0xFF6DA96D; // 丘陵
+                        counts[5]++;
                     } else {
-                        color = 0xFF7F8C8D;
+                        color = 0xFF7F8C8D; // 平原
                         counts[0]++;
                     }
                     double height = lookup.sampleField(Cell.Field.TERRAIN_HEIGHT, bx, bz);
@@ -87,8 +93,8 @@ public final class PreviewDump {
         BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         image.setRGB(0, 0, w, h, px, 0, w);
         ImageIO.write(image, "png", new File(dir, "landform_" + seed + ".png"));
-        System.out.printf("landform seed=%d  %d ms  plain=%d plateau=%d arc=%d rift=%d  familyPositive=%.1f%%%n",
-                seed, elapsed, counts[0], counts[1], counts[2], counts[3],
+        System.out.printf("landform seed=%d  %d ms  plain=%d plateau=%d arc=%d rift=%d basin=%d hills=%d  familyPositive=%.1f%%%n",
+                seed, elapsed, counts[0], counts[1], counts[2], counts[3], counts[4], counts[5],
                 100.0 * familyPositive / Math.max(1, familyTotal));
     }
 

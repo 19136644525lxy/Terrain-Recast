@@ -53,6 +53,14 @@ public final class RealCellLookup implements CellLookup {
     private static final double BIOME_FAMILY_SCALE = 700.0;
     /** 山体区域掩码波长（方块）：决定大片山区的位置。 */
     private static final double MASSIF_SCALE = 1600.0;
+    /** 盆地掩码波长（方块）：内陆低洼盆地的分布尺度。 */
+    private static final double BASIN_SCALE = 1400.0;
+    /** 盆地底面高度（相对海平面）。 */
+    private static final double BASIN_FLOOR = 14.0;
+    /** 山脉主墙的连续走向噪声波长（方块）：够长才能连成"喜马拉雅式"长墙。 */
+    private static final double RANGE_AXIS_SCALE = 2000.0;
+    /** 山脉主墙高度（相对海平面，叠加在造山带之上）。 */
+    private static final double RANGE_WALL = 430.0;
     /**
      * 地表高度上限（相对海平面）。世界最高 Y=2031，海平面约 63，
      * 再留 100 格余量避免顶到建筑上限后地形被截平。
@@ -69,7 +77,9 @@ public final class RealCellLookup implements CellLookup {
 
     /** LANDFORM 编码：给群系表的 weirdness 分带用。 */
     public static final double LANDFORM_CODE_RIFT = -0.6;
+    public static final double LANDFORM_CODE_BASIN = -0.15;
     public static final double LANDFORM_CODE_PLAIN = 0.0;
+    public static final double LANDFORM_CODE_HILLS = 0.10;
     public static final double LANDFORM_CODE_PLATEAU = 0.35;
     public static final double LANDFORM_CODE_ARC = 0.7;
 
@@ -244,9 +254,14 @@ public final class RealCellLookup implements CellLookup {
             // L1 大地貌编码：与地形塑形共用同一套掩码
             double landness = landnessAt(blockX, blockZ);
             if (landness < 0.5) return LANDFORM_CODE_PLAIN; // 海里不标地貌
-            if (riftMaskAt(blockX, blockZ, edge) > 0.30) return LANDFORM_CODE_RIFT;
+            if (riftMaskAt(blockX, blockZ, edge) > 0.40) return LANDFORM_CODE_RIFT;
             if (arcMaskAt(blockX, blockZ, edge) > 0.30) return LANDFORM_CODE_ARC;
-            if (plateauMaskAt(blockX, blockZ, edge, landness) > 0.45) return LANDFORM_CODE_PLATEAU;
+            double plateauMask = plateauMaskAt(blockX, blockZ, edge, landness);
+            if (plateauMask > 0.45) return LANDFORM_CODE_PLATEAU;
+            if (basinMaskAt(blockX, blockZ, edge, landness, plateauMask) > 0.40) return LANDFORM_CODE_BASIN;
+            // 丘陵：既不在盆地里、又有明显起伏的地块
+            double relief = terrainNoise.fbm(blockX, blockZ, INTERIOR_SCALE, 2, 2.0, 0.5);
+            if (Math.abs(relief) > 0.25 && (1.0 - edge) > 0.2) return LANDFORM_CODE_HILLS;
             return LANDFORM_CODE_PLAIN;
         }
         if (field == Cell.Field.WEIRDNESS) {
@@ -332,8 +347,15 @@ public final class RealCellLookup implements CellLookup {
     /** 高原掩码 0~1：板块内部 + 低频分布。 */
     private double plateauMaskAt(int blockX, int blockZ, double edge, double landness) {
         double plateauNoise = smoothstep(clamp(
-                terrainNoise.fbm(blockX, blockZ, PLATEAU_SCALE, 2, 2.0, 0.5) * 0.5 + 0.5, 0.0, 1.0));
-        return clamp(landness * (1.0 - edge) * plateauNoise, 0.0, 1.0);
+                terrainNoise.fbm(blockX, blockZ, PLATEAU_SCALE, 2, 2.0, 0.5) * 1.6 - 0.10, 0.0, 1.0));
+        return clamp(landness * (1.0 - 0.5 * edge) * plateauNoise, 0.0, 1.0);
+    }
+
+    /** 盆地掩码 0~1：内陆、远离边界、不与高原重叠。 */
+    private double basinMaskAt(int blockX, int blockZ, double edge, double landness, double plateauMask) {
+        double basinNoise = terrainNoise.fbm(blockX, blockZ, BASIN_SCALE, 2, 2.0, 0.5);
+        double mask = smoothstep(clamp(basinNoise * 1.9 + 0.05, 0.0, 1.0));
+        return clamp(mask * landness * (1.0 - 0.5 * edge) * (1.0 - 0.8 * plateauMask), 0.0, 1.0);
     }
 
     /** 温度：纬向带 + 低频扰动 + 海拔递减。原版语义区间 [-1, 1]。 */
@@ -417,15 +439,38 @@ public final class RealCellLookup implements CellLookup {
         double arcMask = arcMaskAt(boundaryType, edge);
         double plateauMask = plateauMaskAt(blockX, blockZ, edge, landness);
 
-        // 高原：向台面高度收敛并压平（保留少量起伏，避免镜子一样的平面）
+        // 出生地保护：出生点周围压成平缓平原，避免"一出生就在山上"
+        double spawnDist = Math.sqrt((double) blockX * blockX + (double) blockZ * blockZ);
+        double spawnFlat = smoothstep(clamp(1.0 - spawnDist / 900.0, 0.0, 1.0));
+
+        // 高原：高度随低频噪声起伏（150~320），顶面压平，边缘保留陡坎
         if (plateauMask > 0.01) {
-            double target = PLATEAU_LEVEL + interior * 0.35;
-            h += plateauMask * (target - h) * 0.85;
+            double plateauVariation = terrainNoise.fbm(blockX, blockZ, PLATEAU_SCALE * 2.2, 2, 2.0, 0.5);
+            double target = PLATEAU_LEVEL + plateauVariation * 70.0 + interior * 0.22;
+            double pm = smoothstep(clamp((plateauMask - 0.20) / 0.55, 0.0, 1.0));
+            pm *= 1.0 - spawnFlat;
+            h += pm * (target - h) * 0.88;
+            // 顶面压平：削掉台地上的次级起伏
+            h = h - (h - target) * pm * 0.25;
+        }
+        // 盆地：内陆低洼、底面平坦（前陆盆地/内陆盆地），四周围以丘陵或山
+        double basinMask = basinMaskAt(blockX, blockZ, edge, landness, plateauMask) * (1.0 - spawnFlat);
+        if (basinMask > 0.01) {
+            double floorH = BASIN_FLOOR + interior * 0.20;
+            h += basinMask * (floorH - h) * 0.82;
         }
         // 裂谷：沿张裂边界下切，山脊处切得浅一点
         h -= landness * riftMask * RIFT_DEPTH * (0.55 + 0.45 * ridge);
-        // 火山弧：沿汇聚边界抬升成串珠状山链
-        h += landness * arcMask * ARC_HEIGHT * (0.45 + 0.55 * ridge);
+        // 火山弧 / 造山带主墙：沿汇聚边界连成一条长山墙（喜马拉雅式）
+        double rangeAxis = 1.0 - Math.abs(terrainNoise.fbm(blockX, blockZ, RANGE_AXIS_SCALE, 2, 2.0, 0.5));
+        double rangeWall = arcMask * RANGE_WALL * (0.55 + 0.45 * rangeAxis) * (1.0 - spawnFlat);
+        h += landness * (rangeWall + arcMask * ARC_HEIGHT * (0.45 + 0.55 * ridge));
+
+        // 出生点：向平缓平原收敛（Y 约 45~70），周围地形自然过渡
+        if (spawnFlat > 0.01 && landness > 0.5) {
+            double plainTarget = 20.0 + interior * 0.35;
+            h += spawnFlat * (plainTarget - h);
+        }
 
         // 陆地软下限：权重随陆地程度渐入，海陆交界不留硬边
         h = h + landness * (softMax(h, minContinentHeight) - h);
