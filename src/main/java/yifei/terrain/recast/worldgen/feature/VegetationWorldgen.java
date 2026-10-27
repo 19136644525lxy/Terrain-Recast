@@ -37,11 +37,13 @@ public final class VegetationWorldgen {
     public static void register() {
         // 时序：RegistryBootstrap.init()（置入 FEATURE_TYPE 类型）先于本方法执行，类型已可用。
         var injection = TerrainRecastApi.getFeatureInjection();
-        // 只注入自定义群系：原版群系有自己的地物，混注会触发 Feature order cycle
-        injection.add(GenerationStep.Decoration.VEGETAL_DECORATION, PLACED,
-                yifei.terrain.recast.api.injection.GroupedFeatureInjection.TRC_BIOMES);
-        // 覆盖物同一植被步骤追加注入，密度由 placed 数据与 Feature 内概率共同控制。
-        injection.add(GenerationStep.Decoration.VEGETAL_DECORATION, GROUND,
-                yifei.terrain.recast.api.injection.GroupedFeatureInjection.TRC_BIOMES);
+        // 注入全主世界（overworld 选择器）：瘦身到少数自定义群系后，其参数空间极窄，
+        // 若只注入 terrain_recast 命名空间，玩家绝大多数时间站在原版群系上，看不到本模组植被。
+        // 安全前提：本 vegetation 地物自绘树（不引用任何原版 placed feature），注入原版群系
+        // 不会触发 Feature order cycle；落不落树仍由 Feature.place() 内 Cell 管线
+        // (温度/湿度/海拔/陡峭度) 做最终决策——沙漠/高山依旧不长树。
+        var selector = yifei.terrain.recast.api.injection.GroupedFeatureInjection.OVERWORLD;
+        injection.add(GenerationStep.Decoration.VEGETAL_DECORATION, PLACED, selector);
+        injection.add(GenerationStep.Decoration.VEGETAL_DECORATION, GROUND, selector);
     }
 }

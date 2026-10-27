@@ -1,39 +1,6 @@
 {
   "type": "minecraft:sequence",
   "sequence": [
-    {
-      "type": "minecraft:condition",
-      "if_true": {
-        "type": "minecraft:biome",
-        "biome_is": [
-          "terrain_recast:arc_tundra",
-          "terrain_recast:arc_taiga",
-          "terrain_recast:arc_grassland",
-          "terrain_recast:arc_forest",
-          "terrain_recast:arc_desert",
-          "terrain_recast:arc_savanna"
-        ]
-      },
-      "then_run": {
-        "type": "minecraft:block",
-        "result_state": "minecraft:basalt"
-      }
-    },
-    {
-      "type": "minecraft:condition",
-      "if_true": {
-        "type": "minecraft:biome",
-        "biome_is": [
-          "terrain_recast:plains_desert",
-          "terrain_recast:plateau_desert",
-          "terrain_recast:rift_desert"
-        ]
-      },
-      "then_run": {
-        "type": "minecraft:block",
-        "result_state": "minecraft:sand"
-      }
-    },
     "minecraft:bedrock_floor",
     "minecraft:overworld/copper_ore_vein",
     "minecraft:overworld/iron_ore_vein",

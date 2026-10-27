@@ -50,3 +50,6 @@ server_*.txt
 
 # 崩溃报告
 crash/
+
+# 本地备份（下线功能的临时副本，历史版本在 git 里）
+.backup/
