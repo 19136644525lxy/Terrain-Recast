@@ -62,10 +62,20 @@ public final class TerrainRecastCommands {
             return 0;
         }
         BlockPos center = BlockPos.containing(ctx.getSource().getPosition());
-        List<PeakSearch.Peak> peaks = PeakSearch.search(lookup, center.getX(), center.getZ(), radius, minHeight, 5);
+        PeakSearch.Result result = PeakSearch.search(
+                lookup, center.getX(), center.getZ(), radius, minHeight, 5);
+        List<PeakSearch.Peak> peaks = result.peaks();
         if (peaks.isEmpty()) {
             ctx.getSource().sendSuccess(() -> Component.translatable(
                     "command.terrain_recast.peak.none", radius, (int) minHeight), false);
+            PeakSearch.Peak highest = result.highest();
+            if (highest != null) {
+                int dist = (int) Math.round(Math.hypot(highest.x() - center.getX(), highest.z() - center.getZ()));
+                ctx.getSource().sendSuccess(() -> Component.translatable(
+                        "command.terrain_recast.peak.highest",
+                        highest.x(), highest.z(), (int) Math.round(highest.height()),
+                        (int) Math.round(highest.height()) + 63, dist), false);
+            }
             return 0;
         }
         ctx.getSource().sendSuccess(() -> Component.translatable(

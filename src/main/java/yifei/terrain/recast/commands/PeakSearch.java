@@ -23,10 +23,15 @@ public final class PeakSearch {
 
     /** 粗扫步长（方块）。 */
     private static final int COARSE_STEP = 32;
+    /** 每个轴最多扫多少个点：大半径时自动放粗步长，保证耗时恒定。 */
+    private static final int MAX_SAMPLES_PER_AXIS = 96;
     /** 两个峰之间至少要隔这么远才算"不同的山"，否则会被同一座山重复占位。 */
     private static final int MIN_SEPARATION = 256;
     /** 候选池倍数：多收一些再爬山，否则一座山会把名额占满。 */
     private static final int CANDIDATE_FACTOR = 8;
+
+    /** 一次搜索的结果：达标的峰 + 半径内实际最高点（即使低于阈值也给出来）。 */
+    public record Result(List<Peak> peaks, Peak highest) {}
 
     /**
      * @param centerX    搜索中心（方块）
@@ -35,16 +40,21 @@ public final class PeakSearch {
      * @param minHeight  只保留高度 ≥ 该值的点（相对海平面）
      * @param limit      返回多少个
      */
-    public static List<Peak> search(CellLookup lookup, int centerX, int centerZ,
-                                    int radius, double minHeight, int limit) {
+    public static Result search(CellLookup lookup, int centerX, int centerZ,
+                                int radius, double minHeight, int limit) {
+        // 步长随半径放大：半径 2 万也只会扫 ~96² 个点
+        int step = Math.max(COARSE_STEP, radius / MAX_SAMPLES_PER_AXIS);
         int capacity = Math.max(limit, limit * CANDIDATE_FACTOR);
-        // 小顶堆：保留最高的 capacity 个候选
         PriorityQueue<Peak> top = new PriorityQueue<>(Comparator.comparingDouble(Peak::height));
-        for (int dx = -radius; dx <= radius; dx += COARSE_STEP) {
-            for (int dz = -radius; dz <= radius; dz += COARSE_STEP) {
+        Peak highest = null;
+        for (int dx = -radius; dx <= radius; dx += step) {
+            for (int dz = -radius; dz <= radius; dz += step) {
                 int x = centerX + dx;
                 int z = centerZ + dz;
                 double h = lookup.sampleField(Cell.Field.TERRAIN_HEIGHT, x, z);
+                if (highest == null || h > highest.height()) {
+                    highest = new Peak(x, z, h);
+                }
                 if (h < minHeight) continue;
                 top.add(new Peak(x, z, h));
                 if (top.size() > capacity) top.poll();
@@ -70,7 +80,8 @@ public final class PeakSearch {
             out.add(p);
             if (out.size() >= limit) break;
         }
-        return out;
+        Peak refinedHighest = highest == null ? null : refine(lookup, highest);
+        return new Result(out, refinedHighest);
     }
 
     /** 从粗扫候选点出发，用逐步减半的步长向高处爬，逼近真实峰顶。 */

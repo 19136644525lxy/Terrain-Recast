@@ -92,5 +92,6 @@
   "command.terrain_recast.peak.header": "Top %s peaks within %s blocks:",
   "command.terrain_recast.peak.entry": "%s. (%s, %s) height %s · surface Y≈%s · %s blocks away",
   "command.terrain_recast.peak.none": "No terrain >= %s blocks within %s blocks",
-  "command.terrain_recast.peak.not_ready": "Terrain data is not ready yet"
+  "command.terrain_recast.peak.not_ready": "Terrain data is not ready yet",
+  "command.terrain_recast.peak.highest": "Highest point in range: (%s, %s) height %s · surface Y≈%s · %s blocks away"
 }
