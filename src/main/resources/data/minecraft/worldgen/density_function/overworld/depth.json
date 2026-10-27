@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:add",
+  "left": {
+    "type": "minecraft:gradient",
+    "axis": "y",
+    "from_coordinate": -512,
+    "from_value": 1.5,
+    "to_coordinate": 2031,
+    "to_value": -1.5
+  },
+  "right": {
+    "type": "minecraft:add",
+    "left": -0.8217,
+    "right": "terrain_recast:overworld/trc_cell_offset"
+  }
+}

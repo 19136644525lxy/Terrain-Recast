@@ -1,0 +1,5 @@
+{
+  "type": "minecraft:mul",
+  "left": 0.0011797,
+  "right": "terrain_recast:landform_height"
+}

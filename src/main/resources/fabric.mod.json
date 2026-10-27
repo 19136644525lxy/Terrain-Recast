@@ -1,0 +1,33 @@
+{
+	"schemaVersion": 1,
+	"id": "terrain_recast",
+	"version": "${version}",
+	"name": "Terrain Recast",
+	"description": "重铸 Minecraft 地形生成——板块构造因果推演驱动的地球级真实地貌重塑模组",
+	"authors": [
+		"yifei"
+	],
+	"license": "MIT",
+	"icon": "assets/terrain_recast/icon.png",
+	"environment": "*",
+	"entrypoints": {
+			"main": [
+				"yifei.terrain.recast.TerrainRecast"
+			],
+			"client": [
+				"yifei.terrain.recast.client.TerrainRecastClient"
+			],
+			"modmenu": [
+				"yifei.terrain.recast.client.modmenu.ModMenuIntegration"
+			]
+		},
+	"mixins": [
+		"terrain_recast.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.20.1",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
