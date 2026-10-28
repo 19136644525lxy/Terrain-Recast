@@ -2,6 +2,7 @@
 
 > 用「板块构造 → 大地貌 → 气候 → 高度」的因果链重写主世界地形的 Fabric 模组。
 > A Fabric mod that rebuilds overworld terrain from a plate-tectonics driven causal pipeline.
+> English: [README.en.md](README.en.md)
 
 [![Minecraft](https://img.shields.io/badge/Minecraft-26.3-62b47a?style=flat-square)](https://www.minecraft.net/)
 [![Fabric](https://img.shields.io/badge/Fabric_Loader-0.20.1+-dbb69b?style=flat-square)](https://fabricmc.net/)
@@ -29,6 +30,8 @@ Terrain Recast 用自定义密度函数接管原版主世界地形，地形不�
 
 - **板块地形**：软 Voronoi 板块 + F2−F1 边界距离场，边界处成山、洋侧成沟
 - **两种山脉形态**：瘦山（`edge⁶ × ridge³`，阿尔卑斯式刃脊）与胖山（低频山块，高原式山体）
+- **雪线模型**：海拔降温分两段——雪线以下极缓、雪线以上陡降；雪线随纬度与干旱度浮动（约 980±480 格），干旱区高山常年无雪、走裸岩（`stony_peaks`），湿润区才有雪顶
+- **方山台地**：大尺度噪声划出方山区，区内高过 900 格的山削成 82% 高度的近平顶面（残余坡度 5%），形成带陡坎的方山／tepui；区外山体保持尖峰
 - **喜马拉雅式山墙**：汇聚边界上用低频脊线连成连续长墙，而不是一串孤立圆锥
 - **六类大地貌**：平原 / 丘陵 / 高原（带陡坎）/ 盆地（平坦盆底）/ 裂谷 / 山墙，按板块与纬度分布
 - **出生点保护**：出生点 900 格内强制压平为平原，不会「一出生就在山上」
