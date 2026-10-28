@@ -5,8 +5,8 @@ package yifei.terrain.recast.config;
  *
  * <p>设计：把「有哪些配置项」集中成枚举，单一事实来源，供
  * {@code ConfigHandler} 做加载/保存/校验/夹取，供配置界面与预设系统枚举条目。
- * 每个 key 对应一个可被 {@code ConfigConstant} / {@code ConfigNoise}
- * 消费的 DensityFunction 参数。
+ * 每个 key 对应一个可被 {@code RealCellLookup} 采样时读取的
+ * 地形参数（山脉振幅、垂直缩放等）。
  */
 public enum ConfigOption {
 

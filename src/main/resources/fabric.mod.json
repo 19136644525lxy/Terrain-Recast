@@ -21,9 +21,6 @@
 				"yifei.terrain.recast.client.modmenu.ModMenuIntegration"
 			]
 		},
-	"mixins": [
-		"terrain_recast.mixins.json"
-	],
 	"depends": {
 		"fabricloader": ">=0.20.1",
 		"minecraft": "~26.3",

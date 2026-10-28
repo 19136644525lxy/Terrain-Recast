@@ -37,9 +37,7 @@ double h = TerrainRecastApi.getCellLookup()
 | `getContinentalness()` | double | -1–1 | **直接绑定高度**：`h / coast_span`，>0 陆地、<0 海洋 |
 | `getErosion()` | double | -1–1 | 侵蚀：-1 山高谷深，+1 平坦 |
 | `getWeirdness()` | double | -1–1 | 怪异度噪声 |
-| `getRiverFlow()` | double | 恒 0 | L3 水系预留（未实现） |
-| `getErosionAmount()` | double | 恒 0 | L4 额外侵蚀预留（未实现） |
-| `getLithology()` | int | 1–7 | 岩性编码，见 [05](05-ore-deposit.md) |
+| `getLithology()` | int | 1–9 | 岩性编码，见 [05](05-ore-deposit.md) |
 | `getBiomeCandidate()` | int | 0–8 | Whittaker 群系粗分类，见 `Cell.Biome` |
 
 ### 高度怎么换算成 Y

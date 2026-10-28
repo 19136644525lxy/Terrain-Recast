@@ -7,12 +7,8 @@ import yifei.terrain.recast.api.ore.OreDeposit;
 import yifei.terrain.recast.config.ConfigHandler;
 import yifei.terrain.recast.worldgen.cell.NoopCellLookup;
 import yifei.terrain.recast.worldgen.densityfunction.CellFieldSampler;
-import yifei.terrain.recast.worldgen.densityfunction.ConfigConstant;
-import yifei.terrain.recast.worldgen.densityfunction.ConfigNoise;
-import yifei.terrain.recast.worldgen.densityfunction.EndShatteredContinentFunction;
 import yifei.terrain.recast.worldgen.densityfunction.LandformHeightFunction;
 import yifei.terrain.recast.worldgen.densityfunction.NetherVolcanoDensityFunction;
-import yifei.terrain.recast.worldgen.densityfunction.PlateBoundaryDistanceFunction;
 import yifei.terrain.recast.worldgen.densityfunction.StrataDensityFunction;
 import yifei.terrain.recast.worldgen.materialrule.LithologyRule;
 import yifei.terrain.recast.worldgen.feature.TerrainGroundCoverFeature;
@@ -45,21 +41,13 @@ public final class RegistryBootstrap {
 
         // ==== DensityFunction 类型 ====
         Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE,
-                TerrainRecast.id("config_constant"), ConfigConstant.CODEC);
-        Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE,
-                TerrainRecast.id("config_noise"), ConfigNoise.CODEC);
-        Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE,
                 TerrainRecast.id("cell_field"), CellFieldSampler.CODEC);
-        Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE,
-                TerrainRecast.id("plate_boundary_distance"), PlateBoundaryDistanceFunction.CODEC);
         Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE,
                 TerrainRecast.id("landform_height"), LandformHeightFunction.CODEC);
         Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE,
                 TerrainRecast.id("strata"), StrataDensityFunction.CODEC);
         Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE,
                 TerrainRecast.id("nether_volcano"), NetherVolcanoDensityFunction.CODEC);
-        Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE,
-                TerrainRecast.id("end_shattered_continent"), EndShatteredContinentFunction.CODEC);
 
         // ==== MaterialRule 类型 ====
         // L5 岩性落块：LithologyRule 供 overworld 顶层 material_rule 序列末尾引用。

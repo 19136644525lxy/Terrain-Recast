@@ -1,4 +1,4 @@
-{
+﻿{
   "key.category.terrain_recast": "Terrain Recast",
   "key.terrain_recast.config": "Open Terrain Config",
   "screen.terrain_recast.title": "Terrain Recast Config",
@@ -55,16 +55,6 @@
   "command.terrain_recast.info.config": "Config → Mountain amp %.0f | Interior relief %.0f | Min continent height %.0f",
   "command.terrain_recast.info.cell": "Below feet: height %.0f | temp %.3f",
 
-  "createWorld.tab.terrain_recast.preview.title": "Terrain Preview",
-  "screen.terrain_recast.preview.seed": "World seed",
-  "screen.terrain_recast.preview.seed.hint": "Blank = random seed",
-  "screen.terrain_recast.preview.refresh": "Regenerate",
-  "screen.terrain_recast.preview.random": "Random seed",
-  "screen.terrain_recast.preview.idle": "Preparing preview…",
-  "screen.terrain_recast.preview.loading": "Sampling terrain…",
-  "screen.terrain_recast.preview.info": "%s ms · %s blocks/px",
-  "screen.terrain_recast.preview.other_world_type": "This world type does not use Terrain Recast terrain; preview unavailable",
-  "screen.terrain_recast.preview.failed": "Preview failed: %s",
   "biome.terrain_recast.plains_tundra": "Tundra",
   "biome.terrain_recast.plains_taiga": "Taiga",
   "biome.terrain_recast.plains_grassland": "Grassland",

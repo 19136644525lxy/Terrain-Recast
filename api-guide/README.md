@@ -12,18 +12,16 @@
 | 加地物 | `getFeatureInjection().add()` | 把 placed feature 注入 TRC 群系 |
 | 加矿床 | `getOreRegistry().register()` | 按岩性绑定矿种 |
 | 监听生命周期 | `RecastEvents.CHUNK_GENERATED` / `CELL_PIPELINE_APPLIED` | 区块生成完成、Cell 推演完成的回调 |
-| 结构放置判定 | `StructureSuitability` | **预留接口，尚未接入放置管线**，见 [07](07-structure-suitability.md) |
 
 ## 目录
 
 1. [快速开始](01-quickstart.md) —— 依赖声明、entrypoint、初始化时序
-2. [读取地形数据](02-cell-data.md) —— `CellDataView` 13 个字段的准确语义
+2. [读取地形数据](02-cell-data.md) —— `CellDataView` 11 个字段的准确语义
 3. [数据修改器](03-data-modifier.md) —— 责任链、优先级、线程契约、三个完整示例
 4. [地物注入](04-feature-injection.md) —— 分组注入表、选择器、地物顺序坑
 5. [矿床注册](05-ore-deposit.md) —— 岩性编码、`OreDeposit`、内置矿床表
 6. [事件总线](06-events.md) —— 订阅/发布、两个内置事件
-7. [结构适宜性](07-structure-suitability.md) —— 现状与契约
-8. [踩坑清单](08-pitfalls.md) —— 时序、线程、递归、数据包、26.3 命名
+7. [踩坑清单](08-pitfalls.md) —— 时序、线程、递归、数据包、26.3 命名
 
 ## 30 秒示例
 

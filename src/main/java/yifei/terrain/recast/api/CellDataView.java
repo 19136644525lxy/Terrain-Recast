@@ -26,10 +26,6 @@ public interface CellDataView {
 
     double getWeirdness();
 
-    double getRiverFlow();
-
-    double getErosionAmount();
-
     int getLithology();
 
     /** L6 群系候选分类（Cell.Biome）。未填充前为 0。 */

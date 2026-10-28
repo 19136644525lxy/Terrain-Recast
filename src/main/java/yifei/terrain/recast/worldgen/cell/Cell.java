@@ -10,8 +10,6 @@ import yifei.terrain.recast.api.CellDataView;
  * L0 板块：continentId / plateBoundaryDistance
  * L1 大地貌：landformType / terrainHeight / steepness
  * L2 气候：temperature / moisture / continentalness / erosion / weirdness
- * L3 水系：riverFlow
- * L4 侵蚀：erosionAmount
  * L5 地层：lithology
  * L6 群系：biomeCandidate
  * </pre>
@@ -34,9 +32,9 @@ public final class Cell implements CellDataView {
     public double plateBoundaryDistance;
 
     // ===== L1 大地貌 =====
-    /** 地貌类型枚举 ordinal（褶皱山/断块山/火山/高原/盆地/平原/海沟/岛弧/裂谷……） */
+    /** 形态参数（地形塑形用的辅助量） */
     public int landformType;
-    /** 基准地形高度（Y 轴，单位：方块，以 -64 海平面为 0 的相对高度） */
+    /** 基准地形高度（相对海平面 Y=63 的方块数，即 地表Y − 63） */
     public double terrainHeight;
     /** 地表陡峭度（[0,1]，0=平地，1=悬崖） */
     public double steepness;
@@ -52,14 +50,6 @@ public final class Cell implements CellDataView {
     public double erosion;
     /** 怪异度（≈ 0 规整 ~ 1 狂野） */
     public double weirdness;
-
-    // ===== L3 水系 =====
-    /** 河流流量累积值（D8 算法输出，已 log 压缩） */
-    public double riverFlow;
-
-    // ===== L4 侵蚀 =====
-    /** 额外侵蚀量（水力+热力+岩性差异叠加，用于二次塑形） */
-    public double erosionAmount;
 
     // ===== L5 地层 =====
     /** 岩性枚举 ordinal（花岗岩/玄武岩/石灰岩/砂岩/页岩/片麻岩/火成岩……） */
@@ -101,8 +91,6 @@ public final class Cell implements CellDataView {
         continentalness = 0;
         erosion = 0;
         weirdness = 0;
-        riverFlow = 0;
-        erosionAmount = 0;
         lithology = 0;
         biomeCandidate = 0;
     }
@@ -122,8 +110,6 @@ public final class Cell implements CellDataView {
     @Override public double getContinentalness() { return continentalness; }
     @Override public double getErosion() { return erosion; }
     @Override public double getWeirdness() { return weirdness; }
-    @Override public double getRiverFlow() { return riverFlow; }
-    @Override public double getErosionAmount() { return erosionAmount; }
     @Override public int getLithology() { return lithology; }
     @Override public int getBiomeCandidate() { return biomeCandidate; }
 
@@ -139,9 +125,6 @@ public final class Cell implements CellDataView {
         CONTINENTALNESS        { @Override public double get(Cell c) { return c.continentalness; } },
         EROSION                { @Override public double get(Cell c) { return c.erosion; } },
         WEIRDNESS              { @Override public double get(Cell c) { return c.weirdness; } },
-        RIVER_FLOW             { @Override public double get(Cell c) { return c.riverFlow; } },
-        RIVER_BAND             { @Override public double get(Cell c) { return c.riverFlow; } },
-        EROSION_AMOUNT         { @Override public double get(Cell c) { return c.erosionAmount; } },
         /** 岩性。本质离散量：取最近板块整数值，不做软混合。 */
         LITHOLOGY              { @Override public double get(Cell c) { return c.lithology; } },
         /** L6 群系分类（Whittaker 查表结果，取值见 {@code WhittakerBiome}）。 */

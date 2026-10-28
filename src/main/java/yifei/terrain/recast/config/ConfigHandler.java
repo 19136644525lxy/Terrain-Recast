@@ -14,10 +14,9 @@ import com.google.gson.JsonParser;
 /**
  * 预设配置处理器。持有当前世界的 {@link ConfigState} 实例。
  *
- * <p>设计取舍：Tectonic 的 ConfigHandler.getState() 是全局静态——TRC 同样需要静态入口
- * 让 {@code ConfigConstant} / {@code ConfigNoise} 的 MapCodec（可序列化 DensityFunction）
- * 在反序列化后能重新拿到配置值；但 ConfigState 实例由 {@code RegistryBootstrap}
- * 注入，生命周期绑定 MinecraftServer（世界卸载即 GC）。
+ * <p>设计取舍：Tectonic 的 ConfigHandler.getState() 是全局静态——TRC 同样需要静态入口，
+ * 让地形采样线程在不持有 Server 引用的前提下也能读到当前预设值；但 ConfigState 实例由
+ * {@code RegistryBootstrap} 注入，生命周期绑定 MinecraftServer（世界卸载即 GC）。
  *
  * <p>**不使用 ThreadLocal**——UTF 在这踩过坑：线程池复用时 ThreadLocal 值残留 → 串扰。
  * 改用简单的 volatile 静态引用，单 MinecraftServer 环境下足够安全。

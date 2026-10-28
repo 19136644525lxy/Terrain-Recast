@@ -1,4 +1,4 @@
-{
+﻿{
   "key.category.terrain_recast": "Terrain Recast",
   "key.terrain_recast.config": "打开地形配置",
   "screen.terrain_recast.title": "Terrain Recast 地形配置",
@@ -55,16 +55,6 @@
   "command.terrain_recast.info.config": "当前配置 → 山脉振幅 %.0f | 内陆起伏 %.0f | 大陆最低高度 %.0f",
   "command.terrain_recast.info.cell": "脚下地形：高度 %.0f | 温度 %.3f",
 
-  "createWorld.tab.terrain_recast.preview.title": "地形预览",
-  "screen.terrain_recast.preview.seed": "世界种子",
-  "screen.terrain_recast.preview.seed.hint": "留空 = 随机种子",
-  "screen.terrain_recast.preview.refresh": "重新生成",
-  "screen.terrain_recast.preview.random": "随机种子",
-  "screen.terrain_recast.preview.idle": "正在准备预览…",
-  "screen.terrain_recast.preview.loading": "正在采样地形…",
-  "screen.terrain_recast.preview.info": "用时 %s ms · 每像素 %s 格",
-  "screen.terrain_recast.preview.other_world_type": "当前世界类型不使用 Terrain Recast 地形，预览不可用",
-  "screen.terrain_recast.preview.failed": "预览生成失败：%s",
   "biome.terrain_recast.plains_tundra": "苔原",
   "biome.terrain_recast.plains_taiga": "针叶林",
   "biome.terrain_recast.plains_grassland": "草原",

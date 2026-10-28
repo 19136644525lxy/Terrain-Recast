@@ -271,13 +271,6 @@ public final class RealCellLookup implements CellLookup {
             // 群系族选择器：低频噪声，正负各约一半 → 原版/自定义群系均匀交错
             return terrainNoise.fbm(blockX, blockZ, BIOME_FAMILY_SCALE, 2, 2.0, 0.5);
         }
-        if (field == Cell.Field.RIVER_BAND) {
-            // 水系改动已下线：河带恒为 0（ridges 覆写仍引用该字段，保持数据包可加载）。
-            return 0;
-        }
-        if (field == Cell.Field.RIVER_FLOW) {
-            return 0;
-        }
         if (field == Cell.Field.BIOME) {
             // L6：按本点的温度/湿度/海拔做 Whittaker 查表（不是板块级粗分类）
             double h = terrainHeight(blockX, blockZ, edge);
