@@ -55,6 +55,12 @@ java {
 	targetCompatibility = JavaVersion.VERSION_25
 }
 
+base {
+	// 产物名：Terrain Recast-1.0.0.jar（含空格）。项目名仍是 terrain_recast，
+	// 因此 jar 内附带的 LICENSE_terrain_recast 不受影响。
+	archivesName = "Terrain Recast"
+}
+
 jar {
 	def projectName = project.name
 	inputs.property "projectName", projectName
