@@ -1,5 +1,7 @@
 # Terrain Recast
 
+<p align="center"><img src="src/main/resources/assets/terrain_recast/icon.png" width="144" alt="Terrain Recast icon"></p>
+
 > 用「板块构造 → 大地貌 → 气候 → 高度」的因果链重写主世界地形的 Fabric 模组。
 > A Fabric mod that rebuilds overworld terrain from a plate-tectonics driven causal pipeline.
 > English: [README.en.md](README.en.md)
