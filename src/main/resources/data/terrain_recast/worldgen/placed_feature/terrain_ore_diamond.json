@@ -6,7 +6,7 @@
   "placement": [
     {
       "type": "minecraft:count",
-      "count": 5
+      "count": 2
     },
     {
       "type": "minecraft:in_square"
@@ -15,8 +15,12 @@
       "type": "minecraft:height_range",
       "height": {
         "type": "minecraft:trapezoid",
-        "min_inclusive": { "absolute": -384 },
-        "max_inclusive": { "absolute": -64 }
+        "min_inclusive": {
+          "absolute": -54
+        },
+        "max_inclusive": {
+          "absolute": 20
+        }
       }
     },
     {

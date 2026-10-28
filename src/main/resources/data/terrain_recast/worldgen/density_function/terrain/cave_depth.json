@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:add",
+  "left": {
+    "type": "minecraft:add",
+    "left": 63.0,
+    "right": "terrain_recast:landform_height"
+  },
+  "right": {
+    "type": "minecraft:mul",
+    "left": {
+      "type": "minecraft:gradient",
+      "axis": "y",
+      "from_coordinate": -512,
+      "from_value": -512,
+      "to_coordinate": 2031,
+      "to_value": 2031
+    },
+    "right": -1.0
+  }
+}

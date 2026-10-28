@@ -49,6 +49,10 @@ world height (2544 blocks) is supported.
   rifts / mountain walls, distributed by plate setting and latitude
 - **Spawn protection** — terrain within 900 blocks of spawn is flattened into plains, so you never
   spawn on a mountain
+- **Cave system** — cheese chambers, thin tunnels and vertical shafts layered into one density
+  function; all three are gated by the true depth below the surface, keeping the top 20 blocks
+  solid so the terrain above stays unbroken; caves stop 155 blocks down, their lowest chambers
+  fill with **lava lakes**, and below that the rock turns solid again with an intact bedrock floor
 - **Real surface** — custom `material_rule` places surface blocks by altitude, temperature and
   slope
 - **Commands & presets** — locate peaks, inspect the terrain underfoot, export/import tuning

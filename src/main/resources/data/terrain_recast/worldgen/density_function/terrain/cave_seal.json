@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:range_choice",
+  "input": {
+    "type": "minecraft:gradient",
+    "axis": "y",
+    "from_coordinate": -512,
+    "from_value": -512,
+    "to_coordinate": 2031,
+    "to_value": 2031
+  },
+  "min_inclusive": 63.0,
+  "max_exclusive": 1000000.0,
+  "when_in_range": {
+    "type": "minecraft:constant",
+    "value": 1000000.0
+  },
+  "when_out_of_range": {
+    "type": "minecraft:constant",
+    "value": -1000000.0
+  }
+}

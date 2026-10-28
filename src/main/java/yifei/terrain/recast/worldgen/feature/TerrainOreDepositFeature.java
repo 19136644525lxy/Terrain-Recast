@@ -113,6 +113,13 @@ public record TerrainOreDepositFeature(BlockState ore) implements Feature {
         if (random.nextFloat() > gate) {
             return false;
         }
+        // 全局稀有门：本 feature 按 biome cell 逐个调用，一个区块会调用上百次，
+        // placed feature 的 count / rarity_filter 都会随之放大，无法控制总量。
+        // 故在此按矿种丰度再抽一次，越稀有的矿通过率越低。
+        float rarityGate = 0.30f + 0.40f * (float) richness;
+        if (random.nextFloat() > rarityGate) {
+            return false;
+        }
         BlockPos.MutableBlockPos pos = origin.mutable();
         boolean placed = false;
         int step = 0;

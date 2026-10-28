@@ -36,8 +36,9 @@ public final class OreDepositWorldgen {
     public static void register() {
         var injection = TerrainRecastApi.getFeatureInjection();
         var step = GenerationStep.Decoration.UNDERGROUND_ORES;
-        // 只注入自定义群系，避免与原版群系的地物图产生 Feature order cycle
-        var ours = yifei.terrain.recast.api.injection.GroupedFeatureInjection.TRC_BIOMES;
+        // 注入全部原版主世界群系：自定义群系已于 2026-10-27 下线，TRC_BIOMES 选择器不再命中任何群系。
+        // 所有群系统一追加同一批 placed feature，顺序一致，不会产生 Feature order cycle。
+        var ours = yifei.terrain.recast.api.injection.GroupedFeatureInjection.OVERWORLD;
         injection.add(step, COAL, ours);
         injection.add(step, IRON, ours);
         injection.add(step, GOLD, ours);

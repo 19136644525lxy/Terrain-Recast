@@ -2,8 +2,35 @@
   "type": "minecraft:add",
   "left": {
     "type": "minecraft:min",
-    "left": "terrain_recast:terrain/heightfield",
-    "right": "minecraft:overworld/caves/noodle"
+    "left": {
+      "type": "minecraft:min",
+      "left": "terrain_recast:terrain/cave_depth",
+      "right": {
+        "type": "minecraft:max",
+        "left": {
+          "type": "minecraft:interpolated",
+          "cell_size_xz": 4,
+          "cell_size_y": 8,
+          "input": "terrain_recast:terrain/cave_density"
+        },
+        "right": "terrain_recast:terrain/cave_seal"
+      }
+    },
+    "right": {
+      "type": "minecraft:max",
+      "left": {
+        "type": "minecraft:range_choice",
+        "input": "terrain_recast:terrain/cave_depth",
+        "min_inclusive": 20.0,
+        "max_exclusive": 1000000.0,
+        "when_in_range": "minecraft:overworld/caves/noodle",
+        "when_out_of_range": {
+          "type": "minecraft:constant",
+          "value": 1000000.0
+        }
+      },
+      "right": "terrain_recast:terrain/cave_seal"
+    }
   },
   "right": {
     "type": "minecraft:beardifier"

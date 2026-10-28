@@ -87,7 +87,7 @@ public final class RegistryBootstrap {
         reg.register(new OreDeposit(1, net.minecraft.world.level.block.Blocks.GOLD_ORE.defaultBlockState()));
         reg.register(new OreDeposit(3, net.minecraft.world.level.block.Blocks.IRON_ORE.defaultBlockState()));
         reg.register(new OreDeposit(4, net.minecraft.world.level.block.Blocks.COAL_ORE.defaultBlockState()));
-        reg.register(new OreDeposit(4, net.minecraft.world.level.block.Blocks.DIAMOND_ORE.defaultBlockState(), 7, 0.55));
+        reg.register(new OreDeposit(4, net.minecraft.world.level.block.Blocks.DIAMOND_ORE.defaultBlockState(), 4, 0.35));
     }
 
     /**

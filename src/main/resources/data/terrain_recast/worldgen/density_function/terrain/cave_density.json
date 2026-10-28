@@ -1,0 +1,43 @@
+﻿{
+  "type": "minecraft:max",
+  "left": {
+    "type": "minecraft:min",
+    "left": {
+      "type": "minecraft:min",
+      "left": "terrain_recast:terrain/cave_cheese",
+      "right": {
+        "type": "minecraft:range_choice",
+        "input": "terrain_recast:terrain/cave_depth",
+        "min_inclusive": 10.0,
+        "max_exclusive": 155.0,
+        "when_in_range": "minecraft:overworld/caves/entrances",
+        "when_out_of_range": {
+          "type": "minecraft:constant",
+          "value": 1000000.0
+        }
+      }
+    },
+    "right": {
+      "type": "minecraft:range_choice",
+      "input": "terrain_recast:terrain/cave_depth",
+      "min_inclusive": 10.0,
+      "max_exclusive": 155.0,
+      "when_in_range": "terrain_recast:terrain/cave_spaghetti",
+      "when_out_of_range": {
+        "type": "minecraft:constant",
+        "value": 1000000.0
+      }
+    }
+  },
+  "right": {
+    "type": "minecraft:range_choice",
+    "input": "minecraft:overworld/caves/pillars",
+    "min_inclusive": -1000000.0,
+    "max_exclusive": 0.03,
+    "when_in_range": {
+      "type": "minecraft:constant",
+      "value": -1000000.0
+    },
+    "when_out_of_range": "minecraft:overworld/caves/pillars"
+  }
+}

@@ -36,12 +36,29 @@
       "y_scale": 0.7142857142857143
     },
     "lava": {
-      "type": "minecraft:noise",
-      "noise": "minecraft:aquifer_lava",
-      "xz_scale": 1.0,
-      "y_scale": 1.0
+      "type": "minecraft:range_choice",
+      "input": {
+        "type": "minecraft:gradient",
+        "axis": "y",
+        "from_coordinate": -512,
+        "from_value": -512,
+        "to_coordinate": 2031,
+        "to_value": 2031
+      },
+      "min_inclusive": -1000000.0,
+      "max_exclusive": -250.0,
+      "when_in_range": {
+        "type": "minecraft:noise",
+        "noise": "minecraft:aquifer_lava",
+        "xz_scale": 1.0,
+        "y_scale": 1.0
+      },
+      "when_out_of_range": {
+        "type": "minecraft:constant",
+        "value": -1.0
+      }
     },
-    "surface_level": "minecraft:overworld/preliminary_surface_level"
+    "surface_level": "terrain_recast:terrain/aquifer_surface_level"
   },
   "debug_functions": [
     {
@@ -106,7 +123,7 @@
   "material_rule": "minecraft:overworld",
   "noise": {
     "height": 2544,
-      "min_y": -512
+    "min_y": -512
   },
   "noise_router": {
     "chunk_surface_level": "minecraft:overworld/chunk_surface_level",

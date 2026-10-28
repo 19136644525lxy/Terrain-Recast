@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:add",
+  "left": {
+    "type": "minecraft:constant",
+    "value": 63.0
+  },
+  "right": {
+    "type": "minecraft:min",
+    "left": "terrain_recast:landform_height",
+    "right": {
+      "type": "minecraft:constant",
+      "value": 0.0
+    }
+  }
+}
