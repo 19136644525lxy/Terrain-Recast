@@ -2,6 +2,7 @@
 
 > A Fabric mod that rebuilds overworld terrain from a plate-tectonics driven causal pipeline.
 > 用「板块构造 → 大地貌 → 气候 → 高度」的因果链重写主世界地形。
+> Chinese: [README.md](README.md)
 
 [![Minecraft](https://img.shields.io/badge/Minecraft-26.3-62b47a?style=flat-square)](https://www.minecraft.net/)
 [![Fabric](https://img.shields.io/badge/Fabric_Loader-0.20.1+-dbb69b?style=flat-square)](https://fabricmc.net/)
@@ -12,8 +13,8 @@
 
 ## What it does
 
-Terrain Recast takes over overworld generation with custom density functions. Terrain is no
-longer "Perlin noise stacked into a height" but a causal chain:
+Terrain Recast takes over overworld terrain generation with custom density functions. Terrain is
+no longer "Perlin noise stacked into a height" but:
 
 ```
 plates (soft Worley Voronoi)
@@ -23,33 +24,33 @@ plates (soft Worley Voronoi)
   → analytic height field → density function → real block terrain
 ```
 
-Everything derives from a single **continuous field**: plate identity is never read directly,
-so straight Voronoi edges never turn into hundred-block vertical cliffs. Peaks exceed
-**Y 1500** in favorable seeds, and the full vanilla world height (2544 blocks) is supported.
+All heights come from a single **continuous field**: plate identity is never read directly
+(so straight Voronoi edges never turn into hundred-block vertical cliffs). Peaks reach
+**Y≈1500** (1200–1700 measured across seeds under the default config), and the full vanilla
+world height (2544 blocks) is supported.
 
 ## Features
 
-- **Plate-driven terrain** — soft Voronoi plates plus an F2−F1 boundary distance field: mountains
-  rise along boundaries, trenches cut into the ocean side
+- **Plate-driven terrain** — soft Voronoi plates + F2−F1 boundary distance field: mountains along
+  boundaries, trenches on the ocean side
 - **Two range archetypes** — sharp ranges (`edge⁶ × ridge³`, alpine aretes) and broad massifs
   (low-frequency blocks, plateau-like bodies)
+- **Snowline model** — two-staged altitude cooling: gentle below the local snowline, steep above
+  it; the snowline floats with latitude and aridity (≈980 ± 480 blocks), so arid high mountains
+  stay bare rock (`stony_peaks`) and only humid ones get snow caps
+- **Flat-topped massifs** — large-scale noise carves out mesa zones; peaks above relative height
+  900 inside them are cut to a near-level tabletop at 82% of their height (5% residual slope),
+  giving mesas/tepuis with sheer shoulders; outside the zones summits stay sharp
 - **Himalayan belts** — convergent boundaries are stitched into one continuous wall by
-  low-frequency ridge lines instead of a row of isolated cones
+  low-frequency ridge lines, not a row of isolated cones
 - **Six landform classes** — plains / hills / plateaus (with escarpments) / basins (flat floors) /
   rifts / mountain walls, distributed by plate setting and latitude
-- **Snowline model** — altitude cooling is two-staged: gentle below the local snowline, steep
-  above it. The snowline itself shifts with latitude and aridity (≈980 ± 480 blocks), so arid
-  high mountains stay bare rock (`stony_peaks`) while humid ones get snow caps
-- **Flat-topped massifs** — large-scale noise carves out mesa zones; inside them, peaks above
-  relative height 900 are cut to a near-level tabletop at 82% of their height (5% residual
-  slope), producing mesas and tepuis with sheer shoulders. Mountains outside the zones keep
-  their sharp summits
-- **Spawn protection** — terrain within 900 blocks of spawn is flattened into plains, so you
-  never "spawn on a mountain"
+- **Spawn protection** — terrain within 900 blocks of spawn is flattened into plains, so you never
+  spawn on a mountain
 - **Real surface** — custom `material_rule` places surface blocks by altitude, temperature and
   slope
-- **Commands & presets** — locate peaks, inspect the terrain under your feet, export/import
-  tuning presets
+- **Commands & presets** — locate peaks, inspect the terrain underfoot, export/import tuning
+  presets
 - **Open API** — data modifiers, feature injection, ore registry, event bus
   (see the [API guide](api-guide/README.md))
 
@@ -66,8 +67,8 @@ so straight Voronoi edges never turn into hundred-block vertical cliffs. Peaks e
 
 1. Install a matching Fabric Loader
 2. Drop [Fabric API](https://modrinth.com/mod/fabric-api) and this mod's jar into `mods/`
-3. **Create a new world** — the terrain generator is fixed at world creation; existing worlds
-   are unaffected
+3. **Create a new world** (the terrain generator is fixed at world creation; existing worlds are
+   unaffected)
 
 ## Commands
 
@@ -93,7 +94,7 @@ Heights are **relative to sea level**; surface Y ≈ height + 63.
 
 ## Configuration
 
-Config lives in `config/terrain_recast.json` (per-world, applied when the world is reloaded).
+Config lives in `config/terrain_recast.json` (per-world; applied when the world is reloaded).
 
 | Key | Default | Range | Description |
 |---|---|---|---|
