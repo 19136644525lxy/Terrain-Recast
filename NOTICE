@@ -1,0 +1,20 @@
+Terrain Recast
+Copyright 2026 yifei
+
+This product is licensed under the Apache License, Version 2.0.
+See the LICENSE file for the full license text.
+
+Third-party notices
+-------------------
+Terrain Recast is an independent Minecraft mod. It does not contain, copy or
+redistribute source code from other mods. The following projects were studied
+as design references (their code is NOT included in this repository or in the
+built jar):
+
+  - Tectonic (Apache-2.0)      https://github.com/Apolloun/Apolloun-Tectonic
+  - Terralith (All Rights Reserved, data-pack behavior studied)
+  - TerraForged / ultra-terraforged (LGPL-3.0)
+  - BigGlobe (LGPL-3.0)        https://github.com/builderb0y/bigglobe
+
+Minecraft is a trademark of Mojang Studios. This mod is not affiliated with
+or endorsed by Mojang or Microsoft.

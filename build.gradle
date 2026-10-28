@@ -62,6 +62,8 @@ jar {
 	from("LICENSE") {
 		rename { "${it}_$projectName"}
 	}
+	// Apache-2.0 建议随分发携带 NOTICE（第三方参考项目与商标声明）
+	from("NOTICE")
 }
 
 // configure the maven publication
