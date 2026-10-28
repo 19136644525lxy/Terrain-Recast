@@ -109,6 +109,7 @@ public final class PreviewDump {
         int[] counts = new int[WhittakerBiome.COUNT];
         double[] temps = new double[w * h];
         double[] humid = new double[w * h];
+        double[] heights = new double[w * h];
         long start = System.currentTimeMillis();
         RealCellLookup lookup = new RealCellLookup(seed);
         try {
@@ -121,6 +122,7 @@ public final class PreviewDump {
                     px[y * w + x] = BIOME_COLORS[Math.max(0, Math.min(BIOME_COLORS.length - 1, biome))];
                     temps[y * w + x] = lookup.sampleField(Cell.Field.TEMPERATURE, bx, bz);
                     humid[y * w + x] = lookup.sampleField(Cell.Field.MOISTURE, bx, bz);
+                    heights[y * w + x] = lookup.sampleField(Cell.Field.TERRAIN_HEIGHT, bx, bz);
                 }
             }
         } finally {
@@ -139,6 +141,21 @@ public final class PreviewDump {
                     .append(String.format("%.0f%%", 100.0 * counts[i] / (w * h)));
         }
         System.out.printf("biomes seed=%d  %d ms  %s%n", seed, elapsed, sb);
+        // 高山雪盖比例：h>900 的点里温度低于 -0.25（进入 snowy_slopes）的占比
+        int high = 0;
+        int snowCapped = 0;
+        int[] highTemp = new int[5];
+        for (int i = 0; i < heights.length; i++) {
+            if (heights[i] > 900.0) {
+                high++;
+                if (temps[i] < -0.25) snowCapped++;
+                int b = Math.max(0, Math.min(4, (int) ((temps[i] + 1.0) * 2.5)));
+                highTemp[b]++;
+            }
+        }
+        System.out.printf("   high(h>900): %d pts, snow-capped=%.1f%%  tempbands=%d/%d/%d/%d/%d%n",
+                high, high == 0 ? 0.0 : 100.0 * snowCapped / high,
+                highTemp[0], highTemp[1], highTemp[2], highTemp[3], highTemp[4]);
         java.util.Arrays.sort(temps);
         int tn = temps.length;
         System.out.printf("   temp: p10=%.2f p25=%.2f p50=%.2f p75=%.2f p90=%.2f p99=%.2f%n",

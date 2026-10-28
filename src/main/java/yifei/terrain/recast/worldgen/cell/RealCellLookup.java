@@ -75,6 +75,38 @@ public final class RealCellLookup implements CellLookup {
     /** 火山弧抬升高度（方块）。 */
     private static final double ARC_HEIGHT = 210.0;
 
+    // ===== 雪线（高山雪盖的海拔门槛）=====
+
+    /** 基准雪线（相对海平面，方块）：中纬度雪线高度；赤道按比例抬高、极地降低。 */
+    private static final double SNOWLINE_BASE = 980.0;
+    /** 干旱区雪线抬升上限（方块）：干旱高原上的高山可以常年无雪。 */
+    private static final double SNOWLINE_ARID_BONUS = 480.0;
+    /** 干旱度噪声波长（方块）：决定"湿润雪山"与"干旱裸岩山"的分区。 */
+    private static final double SNOWLINE_SCALE = 2600.0;
+    /** 低地海拔降温起点（相对海平面）：低于此高度不叠加海拔降温，避免整条海岸线变雪原。 */
+    private static final double LOWLAND_ELEV_START = 150.0;
+    /** 低地海拔降温斜率（每方块温度）：很缓，只保留"高原偏凉"的轻微效应。 */
+    private static final double LOWLAND_ELEV_SLOPE = 0.00035;
+    /** 雪线以上的降温斜率：陡，才有一条清晰的雪线。 */
+    private static final double SNOW_ELEV_SLOPE = 0.0022;
+
+    // ===== 平顶山（方山 / 台地 / tepui）=====
+
+    /** 方山带噪声波长（方块）：划分成片的"方山高原区"，区内的高山被削成平台。 */
+    private static final double MESA_ZONE_SCALE = 6000.0;
+    /** 台面高度噪声波长（方块）：同一片台地的顶面高度缓慢变化。 */
+    private static final double MESA_CAP_SCALE = 1200.0;
+    /** 台面高度 = 山体高度 × 该比例，即削掉峰顶约两成，山体仍高但顶部变平台。 */
+    private static final double MESA_TOP_FRACTION = 0.82;
+    /** 台面起伏噪声幅度（方块）：让台面有轻微高低起伏，不像一刀切的方块。 */
+    private static final double MESA_CAP_ROUGHNESS = 70.0;
+    /** 台面最低高度（相对海平面）：低于它的山体不削顶，保持尖峰。 */
+    private static final double MESA_CAP_BASE = 900.0;
+    /** 台面最高高度（相对海平面）：软上限之前的上限，避免台面过高。 */
+    private static final double MESA_CAP_MAX = 1400.0;
+    /** 台面以上残余坡度：0.05 = 超出部分只保留 5%，顶面近乎水平、边缘成陡坎。 */
+    private static final double MESA_SLOPE = 0.05;
+
     /** LANDFORM 编码：给群系表的 weirdness 分带用。 */
     public static final double LANDFORM_CODE_RIFT = -0.6;
     public static final double LANDFORM_CODE_BASIN = -0.15;
@@ -351,13 +383,37 @@ public final class RealCellLookup implements CellLookup {
         return clamp(mask * landness * (1.0 - 0.5 * edge) * (1.0 - 0.8 * plateauMask), 0.0, 1.0);
     }
 
-    /** 温度：纬向带 + 低频扰动 + 海拔递减。原版语义区间 [-1, 1]。 */
+    /**
+     * 温度：纬向带 + 低频扰动 + 海拔降温。原版语义区间 [-1, 1]。
+     *
+     * <p>关键：海拔降温<b>不是</b>从 y=0 起线性生效，而是分两段——
+     * 雪线以下只有极缓的"高原偏凉"，雪线以上才陡降到冰川温度。
+     * 这样干旱区的高山（雪线抬到 1400+）可以完全无雪，落到 {@code stony_peaks} 裸岩；
+     * 只有真正超过本区雪线的峰顶才进 {@code snowy_slopes}。
+     */
     private double temperature(int blockX, int blockZ, double edge) {
         double lat = Math.min(1.0, Math.abs(blockZ) / latitudeScale);
         double jitter = terrainNoise.fbm(blockX, blockZ, CLIMATE_JITTER_SCALE, 2, 2.0, 0.5) * 0.30;
         // 用解析基面高度：temperature 是群系查询的热点，不能触发水文建区
-        double elev = Math.max(0.0, baseTerrainHeight(blockX, blockZ, edge) - 100.0) * 0.0015;
+        double h = baseTerrainHeight(blockX, blockZ, edge);
+        double snowLine = snowLineAt(blockX, blockZ, lat);
+        double elev = Math.max(0.0, h - LOWLAND_ELEV_START) * LOWLAND_ELEV_SLOPE
+                + Math.max(0.0, h - snowLine) * SNOW_ELEV_SLOPE;
         return clamp(0.55 - 1.05 * lat + jitter - elev, -1.0, 1.0);
+    }
+
+    /**
+     * 本点雪线高度（相对海平面，方块）。
+     *
+     * <p>三因子：纬度（赤道雪线高、极地低，即 0° 约 4800 m、40° 约 2800 m 的压缩版）、
+     * 干旱度（干旱高原的雪线能再抬 400~500 格，像安第斯干旱带、青藏西部），
+     * 以及一个低频噪声让雪山与裸岩山成片交错，而不是一圈等高的雪线。
+     */
+    private double snowLineAt(int blockX, int blockZ, double lat) {
+        double aridity = clamp(
+                terrainNoise.fbm(blockX, blockZ, SNOWLINE_SCALE, 2, 2.0, 0.5) * 1.5 + 0.15, 0.0, 1.0);
+        double equatorial = 1.0 - lat;   // 赤道 1 → 极地 0
+        return SNOWLINE_BASE * (0.55 + 0.45 * equatorial) + SNOWLINE_ARID_BONUS * aridity;
     }
 
     /** 湿度：噪声主导，沿海更湿、内陆更干。原版语义区间 [-1, 1]。 */
@@ -463,6 +519,23 @@ public final class RealCellLookup implements CellLookup {
         if (spawnFlat > 0.01 && landness > 0.5) {
             double plainTarget = 20.0 + interior * 0.35;
             h += spawnFlat * (plainTarget - h);
+        }
+
+        // ===== 平顶山（方山 / 台地 / tepui）：把高峰的上半截削成平坦台面 =====
+        // 低频选择噪声决定这一片山体有没有"侵蚀面"；有侵蚀面的山体，超出侵蚀面的部分被切掉。
+        // 约四成山地被选中，其余保持尖峰，两种形态交错出现。
+        // 方山带：大尺度噪声划出成片的"方山高原区"，区内的高山统一削成台面
+        double mesaZone = smoothstep(clamp(
+                terrainNoise.fbm(blockX, blockZ, MESA_ZONE_SCALE, 2, 2.0, 0.5) * 2.0 + 0.30, 0.0, 1.0));
+        double mesaDrive = mesaZone * landness * (1.0 - spawnFlat) * clamp(orogenGain * 3.0, 0.0, 1.0);
+        if (mesaDrive > 0.02 && h > MESA_CAP_BASE) {
+            // 台面高度 = 山体高度 × 该比例，再叠小幅噪声让台面有起伏（不像一刀切出的方块）
+            double cap = clamp(h * MESA_TOP_FRACTION
+                    + terrainNoise.fbm(blockX, blockZ, MESA_CAP_SCALE, 2, 2.0, 0.5) * MESA_CAP_ROUGHNESS,
+                    MESA_CAP_BASE, MESA_CAP_MAX);
+            // 超出台面的部分只保留 4% → 顶面近水平、坡肩成陡坎
+            double cut = cap + (h - cap) * MESA_SLOPE;
+            h += mesaDrive * (cut - h);
         }
 
         // 陆地软下限：权重随陆地程度渐入，海陆交界不留硬边
